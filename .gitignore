@@ -1,13 +1,16 @@
-Tools/WDCTools Version 2.1.zip
-Obj
-CharSet Manager/.vs/CharSet Manager/v15/.suo
-/.vs/Nu64/v15
 *.pdb
 *.suo
 *.user
-.vs
-Tests/*.hex
-Tests/*.lst
+Obj
 bin/Debug
 bin/Release
 packages
+.vs
+CharSet Manager/.vs
+CharSet Manager/bin
+FoenixIDESetup/Debug
+FoenixIDESetup/Release
+FoenixIDETester/bin
+Tests/*.hex
+Tests/*.lst
+Tools/WDCTools Version 2.1.zip
