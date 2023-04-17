@@ -79,6 +79,7 @@ namespace FoenixIDE.UI
             this.BreakOnIRQCheckBox = new System.Windows.Forms.CheckBox();
             this.LabelOverlayButton = new System.Windows.Forms.Button();
             this.registerDisplay1 = new FoenixIDE.RegisterDisplay();
+            this.cpuLogCheckBox = new System.Windows.Forms.CheckBox();
             this.HeaderPanel.SuspendLayout();
             this.SecondPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DebugPanel)).BeginInit();
@@ -680,11 +681,23 @@ namespace FoenixIDE.UI
             this.registerDisplay1.TabIndex = 0;
             this.registerDisplay1.MouseEnter += new System.EventHandler(this.DebugPanel_Leave);
             // 
+            // cpuLogCheckBox
+            // 
+            this.cpuLogCheckBox.AutoSize = true;
+            this.cpuLogCheckBox.BackColor = System.Drawing.SystemColors.Control;
+            this.cpuLogCheckBox.Location = new System.Drawing.Point(293, 28);
+            this.cpuLogCheckBox.Name = "cpuLogCheckBox";
+            this.cpuLogCheckBox.Size = new System.Drawing.Size(69, 17);
+            this.cpuLogCheckBox.TabIndex = 35;
+            this.cpuLogCheckBox.Text = "CPU Log";
+            this.cpuLogCheckBox.UseVisualStyleBackColor = false;
+            // 
             // CPUWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(758, 515);
+            this.Controls.Add(this.cpuLogCheckBox);
             this.Controls.Add(this.LabelOverlayButton);
             this.Controls.Add(this.irqPanel);
             this.Controls.Add(this.HeaderTextbox);
@@ -772,5 +785,6 @@ namespace FoenixIDE.UI
         private ColorCheckBox SDCardCheckBox;
         private ColorCheckBox SOFCheckbox;
         private ColorCheckBox KeyboardCheckBox;
+        private System.Windows.Forms.CheckBox cpuLogCheckBox;
     }
 }
