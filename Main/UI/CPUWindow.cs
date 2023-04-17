@@ -19,6 +19,7 @@ namespace FoenixIDE.UI
 
         private Breakpoints knl_breakpoints;
         private List<DebugLine> codeList = null;
+        private List<DebugLine> transcript = null;
 
         public static CPUWindow Instance = null;
         private FoenixSystem kernel = null;
@@ -31,6 +32,13 @@ namespace FoenixIDE.UI
 
         Point position = new Point();
         private int MemoryLimit = 0;
+
+        public enum DebugWindowMode
+        {
+            Default,
+            Transcipt
+        }
+        private DebugWindowMode currentDebugWindowMode = DebugWindowMode.Default;
 
         public CPUWindow()
         {
@@ -71,10 +79,16 @@ namespace FoenixIDE.UI
             DebugPanel.Refresh();
         }
 
+        // This is called once upon setting a new kernel.
         private void UpdateQueue()
         {
+            // Initialize a new transcript.
+            // Transcript size is based on whatever will fit in the window.
+            transcript = new List<DebugLine>(DebugPanel.Height / ROW_HEIGHT);
+
             if (kernel.lstFile != null && kernel.lstFile.Lines.Count > 0)
             {
+                // Kernel source is attached; load the source listing
                 codeList = new List<DebugLine>(kernel.lstFile.Lines.Count);
                 foreach (DebugLine line in kernel.lstFile.Lines.Values)
                 {
@@ -83,6 +97,7 @@ namespace FoenixIDE.UI
             }
             else
             {
+                // No kernel source attached. Load an empty source listing, with the current instruction disassembled.
                 codeList = new List<DebugLine>(DebugPanel.Height / ROW_HEIGHT);
                 GenerateNextInstruction(kernel.CPU.PC);
             }
@@ -97,14 +112,13 @@ namespace FoenixIDE.UI
         {
             while (!kernel.CPU.DebugPause)
             {
-                ExecuteStep();
+                ExecuteStep(WriteToTranscriptEnablement.Disabled);
             }
         }
 
         private void CPUWindow_Load(object sender, EventArgs e)
         {
-            
-            HeaderTextbox.Text = "LABEL          PC      OPCODES      SOURCE";
+            UpdateHeaderTextBoxLabel();
             ClearTrace();
             RefreshStatus();
             Tooltip.SetToolTip(AddBPOverlayButton, "Add Breakpoint");
@@ -134,8 +148,29 @@ namespace FoenixIDE.UI
             DebugPanel.Paint += new System.Windows.Forms.PaintEventHandler(DebugPanel_Paint);
         }
 
+        private void DrawDebugPanelHeader(PaintEventArgs e, string label, int yIndex)
+        {
+            // Draw the label as a black box with white text
+            if (label != null)
+            {
+                e.Graphics.FillRectangle(Brushes.Blue, 1, yIndex * ROW_HEIGHT, LABEL_WIDTH + 2, ROW_HEIGHT + 2);
+                e.Graphics.DrawString(label, HeaderTextbox.Font, Brushes.Yellow, 2, yIndex * ROW_HEIGHT);
+            }
+        }
 
-        private void DebugPanel_Paint(object sender, PaintEventArgs e)
+        private void HighlightLine(PaintEventArgs e, int yIndex, bool isInterrupt)
+        {
+            e.Graphics.FillRectangle(isInterrupt ? Brushes.Orange : Brushes.LightBlue, LABEL_WIDTH + 1, yIndex * ROW_HEIGHT, DebugPanel.Width, ROW_HEIGHT);
+        }
+
+        private void DrawRunningCodeRealFastMessage(PaintEventArgs e)
+        {
+
+            e.Graphics.FillRectangle(Brushes.LightBlue, 0, 0, this.Width, this.Height);
+            e.Graphics.DrawString("Running code real fast ... no time to write!", HeaderTextbox.Font, Brushes.Black, 8, DebugPanel.Height / 2);
+        }
+
+        private void DebugPanel_Paint_DefaultMode(PaintEventArgs e)
         {
             bool paint = false;
             int currentPC = kernel.CPU.PC;
@@ -172,12 +207,10 @@ namespace FoenixIDE.UI
                                     for (int c = 5; c > 0; c--)
                                     {
                                         DebugLine q0 = codeList[index - c];
+                                        
                                         // Draw the label as a black box with white text
-                                        if (q0.label != null)
-                                        {
-                                            e.Graphics.FillRectangle(Brushes.Blue, 1, painted * ROW_HEIGHT, LABEL_WIDTH + 2, ROW_HEIGHT + 2);
-                                            e.Graphics.DrawString(q0.label, HeaderTextbox.Font, Brushes.Yellow, 2, painted * ROW_HEIGHT);
-                                        }
+                                        DrawDebugPanelHeader(e, q0.label, painted);
+
                                         if (q0.PC == IRQPC)
                                         {
                                             e.Graphics.FillRectangle(Brushes.Orange, 0, painted * ROW_HEIGHT, this.Width, ROW_HEIGHT);
@@ -202,8 +235,9 @@ namespace FoenixIDE.UI
                                 }
                                 offsetPrinted = true;
                             }
-                            e.Graphics.FillRectangle(line.PC == IRQPC ? Brushes.Orange : Brushes.LightBlue, LABEL_WIDTH + 1, painted * ROW_HEIGHT, DebugPanel.Width, ROW_HEIGHT);
 
+                            bool isInterrupt = line.PC == IRQPC;
+                            HighlightLine(e, painted, isInterrupt);
                         }
                         if (painted > 27)
                         {
@@ -244,13 +278,53 @@ namespace FoenixIDE.UI
             }
             else
             {
-                e.Graphics.FillRectangle(Brushes.LightBlue, 0, 0, this.Width, this.Height);
-                e.Graphics.DrawString("Running code real fast ... no time to write!", HeaderTextbox.Font, Brushes.Black, 8, DebugPanel.Height / 2);
+                DrawRunningCodeRealFastMessage(e);
+             }
+        }
+
+        private void DebugPanel_Paint_TranscriptMode(PaintEventArgs e)
+        {
+            if (transcript.Count == 0)
+                return;
+
+            DrawDebugPanelHeader(e, transcript[0].label, 0);
+
+            int lastLineIndex = transcript.Count - 1;
+            HighlightLine(e, lastLineIndex, false);
+
+            int index = 0;
+            foreach (DebugLine line in transcript)
+            {
+                e.Graphics.DrawString(line.ToString(), HeaderTextbox.Font, Brushes.Black, 102, index * ROW_HEIGHT);
+                index++;
+            }
+        }
+
+        private void DebugPanel_Paint(object sender, PaintEventArgs e)
+        {
+            if (kernel.CPU.DebugPause && codeList != null)
+            {
+                if (currentDebugWindowMode == DebugWindowMode.Default)
+                {
+                    DebugPanel_Paint_DefaultMode(e);
+                }
+                else
+                {
+                    System.Diagnostics.Debug.Assert(currentDebugWindowMode == DebugWindowMode.Transcipt);
+                    DebugPanel_Paint_TranscriptMode(e);
+                }
+            }
+            else
+            {
+                DrawRunningCodeRealFastMessage(e);
             }
         }
 
         private void DebugPanel_MouseMove(object sender, MouseEventArgs e)
         {
+            if (currentDebugWindowMode == DebugWindowMode.Transcipt)
+                return; // Nothing to do if in transcript mode
+
             if (kernel.CPU.DebugPause)
             {
                 if (e.X > 2 && e.X < 2 + LABEL_WIDTH)
@@ -468,12 +542,19 @@ namespace FoenixIDE.UI
         private void StepButton_Click(object sender, EventArgs e)
         {
             DebugPanel_Leave(sender, e);
+
+            // From a concurrency perspective, two possibilities here for the ThreadProc.
+            // We paused when either
+            // 1) ThreadProc was in the middle of executing an instruction.
+            // 2) ThreadProc was finished executing an instruction.
+            // The call to ExecuteStep below should take this into account.
             kernel.CPU.DebugPause = true;
+
             //kernel.CPU.CPUThread?.Join();
             RunButton.Text = "Run (F5)";
             RunButton.Tag = "0";
             UpdateTraceTimer.Enabled = false;
-            ExecuteStep();
+            ExecuteStep(WriteToTranscriptEnablement.Enabled);
             RefreshStatus();
             registerDisplay1.RegistersReadOnly(false);
             MainWindow.Instance.setGpuPeriod(500);
@@ -533,7 +614,7 @@ namespace FoenixIDE.UI
             }
             else
             {
-                ExecuteStep();
+                ExecuteStep(WriteToTranscriptEnablement.Enabled);
                 RefreshStatus();
             }
         }
@@ -601,11 +682,17 @@ namespace FoenixIDE.UI
         }
         private delegate void nullParamMethod();
 
+        public enum WriteToTranscriptEnablement
+        {
+            Enabled,
+            Disabled
+        }
+
         /// <summary>
         /// Executes next step of 65C816 code, logs dubeugging data
         /// if debugging check box is set on CPU Window
         /// </summary>
-        public void ExecuteStep()
+        public void ExecuteStep(WriteToTranscriptEnablement writeToTranscriptEnablement)
         {
             StepCounter++;
             DebugLine line = null;
@@ -681,7 +768,13 @@ namespace FoenixIDE.UI
                     GenerateNextInstruction(pc);
                 }
             }
-                    
+
+            // Implicitly, this update transcript if unpaused only, don't want to incur the overhead unconditionally.
+            if (writeToTranscriptEnablement == WriteToTranscriptEnablement.Enabled)
+            {
+                DebugLine transcriptLine = GetDebugLineFromPC(kernel.CPU.PC);
+                PushLineToTranscript(transcriptLine);
+            }
         }
 
         private delegate void lastLineDelegate(string line);
@@ -701,8 +794,38 @@ namespace FoenixIDE.UI
             {
                 return null;
             }
-
         }
+
+        DebugLine GetDebugLineFromPC(int pc)
+        {
+            DebugLine line = null;
+            OpCode oc = kernel.CPU.GetOpcodeAtAddress(pc);
+            if (oc != null)
+            {
+                int ocLength = oc.Length;
+                byte[] command = new byte[ocLength];
+                for (int i = 0; i < ocLength; i++)
+                {
+                    command[i] = kernel.MemMgr.RAM.ReadByte(pc + i);
+                }
+                string opcodes = oc.ToString(kernel.CPU.ReadSignature(ocLength, pc));
+
+                line = new DebugLine(kernel.CPU.PC, kernel.CPU.A.Value, kernel.CPU.X.Value, kernel.CPU.Y.Value, kernel.CPU.P);
+                line.SetOpcodes(command);
+                line.SetMnemonic(opcodes);
+            }
+            return line;
+        }
+
+        void PushLineToTranscript(DebugLine line)
+        {
+            if (transcript.Count == transcript.Capacity)
+            {
+                transcript.RemoveAt(0);
+            }
+            transcript.Add(line);
+        }
+
         private void GenerateNextInstruction(int pc)
         {
             OpCode oc = kernel.CPU.PreFetch();
@@ -960,6 +1083,38 @@ namespace FoenixIDE.UI
                 byte reg3 = kernel.MemMgr.INTERRUPT.ReadByte(3);
             }
             return result;
+        }
+        void UpdateHeaderTextBoxLabel()
+        {
+            if (currentDebugWindowMode == DebugWindowMode.Default)
+            {
+                HeaderTextbox.Text = "LABEL          PC      OPCODES      SOURCE";
+            }
+            else
+            {
+                System.Diagnostics.Debug.Assert(currentDebugWindowMode == DebugWindowMode.Transcipt);
+                HeaderTextbox.Text = "               PC      OPCODES      SOURCE         REGISTERS";
+            }
+        }
+
+        public void SetDebugWindowMode(DebugWindowMode mode)
+        {
+            bool changed = currentDebugWindowMode != mode;
+            currentDebugWindowMode = mode;
+
+            if (!changed)
+                return;
+
+            UpdateHeaderTextBoxLabel();
+
+            if (mode == DebugWindowMode.Transcipt)
+            {
+                AddBPOverlayButton.Visible = false;
+                DeleteBPOverlayButton.Visible = false;
+                InspectOverlayButton.Visible = false;
+                StepOverOverlayButton.Visible = false;
+                LabelOverlayButton.Visible = false;
+            }
         }
 
         private void ResetButton_Click(object sender, EventArgs e)

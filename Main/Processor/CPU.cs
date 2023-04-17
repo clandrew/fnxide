@@ -253,6 +253,11 @@ namespace FoenixIDE.Processor
             return opcodes[MemMgr[PC]];
         }
 
+        public OpCode GetOpcodeAtAddress(int address)
+        {
+            return opcodes[MemMgr[address]];
+        }
+
         public int ReadSignature(int length, int pc)
         {
             switch (length)
