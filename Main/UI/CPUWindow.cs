@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using FoenixIDE.Processor;
@@ -20,6 +21,8 @@ namespace FoenixIDE.UI
         private Breakpoints knl_breakpoints;
         private List<DebugLine> codeList = null;
         private List<DebugLine> transcript = null;
+
+        CPULogger cpuLogger = null;
 
         public static CPUWindow Instance = null;
         private FoenixSystem kernel = null;
@@ -46,6 +49,7 @@ namespace FoenixIDE.UI
             Instance = this;
             DisableIRQs(true);
             registerDisplay1.RegistersReadOnly(false);
+            cpuLogger = new CPULogger();
         }
 
         public void SetKernel(FoenixSystem kernel)
@@ -769,11 +773,24 @@ namespace FoenixIDE.UI
                 }
             }
 
-            // Implicitly, this update transcript if unpaused only, don't want to incur the overhead unconditionally.
-            if (writeToTranscriptEnablement == WriteToTranscriptEnablement.Enabled)
+            bool evaluateDebugLine =
+                writeToTranscriptEnablement == WriteToTranscriptEnablement.Enabled ||
+                cpuLogCheckBox.Checked;
+
+            if (evaluateDebugLine)
             {
                 DebugLine transcriptLine = GetDebugLineFromPC(kernel.CPU.PC);
-                PushLineToTranscript(transcriptLine);
+
+                // Implicitly, this update transcript if unpaused only, don't want to incur the overhead unconditionally.
+                if (writeToTranscriptEnablement == WriteToTranscriptEnablement.Enabled)
+                {
+                    PushLineToTranscript(transcriptLine);
+                }
+
+                if (cpuLogCheckBox.Checked)
+                {
+                    cpuLogger.Log(transcriptLine.ToString());
+                }
             }
         }
 
@@ -1153,6 +1170,68 @@ namespace FoenixIDE.UI
             {
                 ColorCheckBox ccb = (ColorCheckBox)sender;
                 ccb.IsActive = false;
+            }
+        }
+
+        private class CPULogger : IDisposable
+        {
+            StreamWriter stream = null;
+            int fileIndex = 0;
+            int lineIndex = 0;
+
+            const int lineLimit = 9000;
+
+            public void Log(string line)
+            {
+                if (lineIndex == lineLimit)
+                {
+                    FinalizeCurrentFile();
+                }
+
+                if (stream == null)
+                {
+                    stream = new StreamWriter(GetFilename(fileIndex), false);
+                }
+
+                stream.WriteLine(line);
+                lineIndex++;
+            }
+
+            private static string GetFilename(int fileIndex)
+            {
+                return "cpuLog_" + fileIndex.ToString("D4") + ".txt";
+            }
+
+            private void FinalizeCurrentFile()
+            {
+                stream.Dispose();
+                stream = null;
+                lineIndex = 0;
+                fileIndex++;
+            }
+
+            public void Flush()
+            {
+                if (stream != null)
+                {
+                    FinalizeCurrentFile();
+                }
+            }
+
+            public void Dispose()
+            {
+                if (stream != null)
+                {
+                    stream.Dispose();
+                }
+            }
+        }
+
+        private void cpuLogCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!cpuLogCheckBox.Checked)
+            {
+                cpuLogger.Flush();
             }
         }
     }

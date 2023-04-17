@@ -18,6 +18,7 @@ namespace FoenixIDE.UI
             if (disposing && (components != null))
             {
                 components.Dispose();
+                cpuLogger.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -691,6 +692,7 @@ namespace FoenixIDE.UI
             this.cpuLogCheckBox.TabIndex = 35;
             this.cpuLogCheckBox.Text = "CPU Log";
             this.cpuLogCheckBox.UseVisualStyleBackColor = false;
+            this.cpuLogCheckBox.CheckedChanged += new System.EventHandler(this.cpuLogCheckBox_CheckedChanged);
             // 
             // CPUWindow
             // 
