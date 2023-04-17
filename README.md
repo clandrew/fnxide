@@ -1,7 +1,11 @@
 # FoenixIDE
 Development and Debugging Suite for the C256 Foenix Family of Computers.
 
+---
+
 **Note:** This is a detached fork of Trinity-11's [FoenixIDE](https://github.com/clandrew/FoenixIDE) project. Full credit goes to Trinity-11 for all of the initial upload. A detached fork is used because there are certain changes that I want to make, that won't be accepted for FoenixIDE main (for example, [transcript debugger](http://cml-a.com/content/2022/12/14/transcript-debugger/)) while I want my GitHub commit graph to appear accurate for my own recordkeeping. This detached fork complies with the project license. See the [License](https://github.com/clandrew/fnxide/blob/main/LICENSE) file for details.
+
+---
 
 This project is derived from the Nu64 emulator built by Tom Wilson.  Nu64 is owned by Tom Wilson. 
 FoenixIDE is owned by the C256 team, led by Stefany Allaire.
