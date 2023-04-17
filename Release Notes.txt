@@ -1,0 +1,489 @@
+Release 0.6.0.3
+---------------
+Fixed tile editor when small tiles are used without stride.
+Fixed blank asset list when adding assets from the Tools | Load Assets menu.
+Fixed the problem with sprites leaking into the border when in F256Jr mode.
+Fixed the Tile Editor for the F256Jr.
+** TODO: Users can now modify the CPU registers when in debug mode. The registers have a white background when editable.
+** TODO: Implemented the various cursor modes and rates.
+** TODO: Add breaklines in debugger listing, when memory is not contiguous.
+
+Release 0.6.0.2
+---------------
+Fixed CPU reading incorrect page when MMU is present in F256Jr.
+Fixed LUT editing issue.
+Fixed Tileset stride issue.
+Removed MultimediaTimer and replaced with a native C# HiResTimer.
+Added sprite functionality for the F256Jr.
+In the Uploader window, when in F256Jr mode, the buffer size is 2K.
+
+Release 0.6.0.1
+---------------
+Implemented tiles for F256Jr.
+Fixed the issue when resetting the CPU, also reset the MMU and VICKY Layer Manager Registers.
+Fixed RTC issue in F256Jr where the time was written in RAM.
+
+Release 0.6.0.0
+---------------
+Fixed an issue where CPS/FPS display was showing zeroes after switching Board type.
+Started to add support for the F256 Junior.
+MMU is implemented.
+Text and cursor display is implemented; bitmaps, sprites and tilemaps are not.
+Interrupts for Timers 0 and 1, Keyboard and Mouse are implemented.
+
+Release 0.5.6.10
+----------------
+Added kernel files for all current C256 Foenix variants.  The kernel loader checks the machine type and loads the matching kernel from the roms folder.
+
+Release 0.5.6.9
+---------------
+Fixed a bug with incrementing registers wasn't overflowing correctly.
+
+Release 0.5.6.8
+---------------
+Added tool to generate PGZ files.
+Updated the Uploader Dialog to allow for sending PGX and PGZ files.
+Updated IDE start-up to accept PGX and PGZ files - from "Load Executable menu" and drag-n-drop.
+
+Release 0.5.6.7
+---------------
+Attempt to fix the tile scrolling bug.
+
+Release 0.5.6.6
+---------------
+When in debug mode, only redraw the display twice per second instead of 60 times in run mode.
+Added support for small tiles 8x8.
+
+Release 0.5.6.5
+---------------
+Fixed the Asset Loader to use *.tlm for tilemaps, instead of .tls.
+Added the "Restart with Default Kernel" menu item to reload the default kernel, instead of the last program.
+Changed the PCB Revision to EMB, EMC, EMU and EM+ for Rev B, Rev C, Rev U and Rev U+ respectively.
+
+Release 0.5.6.4
+---------------
+Added 24-bit value to the watch list.
+
+Release 0.5.6.3
+---------------
+Extended the Asset Loader to convert sprite sheets wider than 32 pixels.  The sprites will be de-interlaced.
+Added the "big tile" images in the Tile Editor.
+Now, users can pick two tiles, associated with the left and righ button, to make drawing a little bit easier.
+When resetting the CPU (from the Main window or the CPU window), if the SD card is loaded, reload the contents.
+
+Release 0.5.6.2
+---------------
+Handle the BREAK key scan codes.  Useful for stopping a BASIC program.
+Fixed the tiles from bleeding into the right border.
+
+Release 0.5.5.7
+---------------
+Added Zero button in Memory window to reset a page to zero.
+Fixed Asset Loading - when LUT data already exists, we often ended up in an infinite loop, for 8bpp image.  We now exit the LUT loop when the mask equals $C0 (only 2 bits).
+Added an "Overwrite LUT" checkbox in the Asset Loader.
+Updated the Game Generator to use the new VICKY "GENERAL" file.
+Added specialized checkboxes to display which interrupt was triggered, in the CPU window.
+
+Release 0.5.5.6
+---------------
+Fixed an issue that cause the emulator to crash when Video Address written in Vicky are not offset properly.
+Added a "Show Memory" button to the Tile Editor.
+
+Release 0.5.5.5
+---------------
+Fixed FPtoFixed conversion and overflow flag assignment. This was causing problems in BASIC816 for loops.
+
+Release 0.5.5.3
+---------------
+Fixed the installer issue with the Start Link pointing to the user's programs, instead of the actual application.
+Fixed several issues with the Game Generator.
+Added color code editor for the Game Generator.
+
+Release 0.5.5.0
+---------------
+Added the Asset Window and connected it to the Asset Loader (used to be bitmap loader).
+Resources are now saved with the FNXML file and reloaded.
+TileEditor saves its Tilemaps to assets now, instead of plain files.
+
+Release 0.5.4.1
+---------------
+Fixed a bug in the SBC when using a 16-bit accumulator.
+Removed the "Open Hex File (w/o Zeroing)" - the option was confusing.
+Removed the silly blue border around the GPU control.
+Fixed loading of breakpoints with the Foenix XML file.
+
+Release 0.5.4.0
+---------------
+Handling Timer interrupts.  Only the CHARGE registers are used to determine the interval.  Minimum interval allowed is 1 millisecond.
+
+Release 0.5.3.3
+---------------
+Fixed several issues with the tile editor.
+Added a few more addresses to the Memory Addresses dropdown list.
+In the Memory Window, when the user types an address, try to match it to an item in the dropdown list.
+
+Release 0.5.3.2
+---------------
+Added the floating point (FP) processor.
+Fixed the bug with TXS setting NZ flags.
+
+Release 0.5.3.1
+---------------
+Fixed problem with overflow flag.  This fixed the issue found in the SimplePrintf program.
+
+Release 0.5.3.0
+---------------
+Fixed the tile editor to work with Vicky II.
+
+Release 0.5.2.4
+---------------
+The border was getting displayed even when the register was set to 0.
+Tiles were off by several lines and offset to the right.
+
+Release 0.5.2.3
+---------------
+The checkbox to break on Mouse Interrupts was not handled.
+Added mouse interrupts.
+Update README.md typo.
+
+Release 0.5.2.2 
+---------------
+Fixed issues with BIT and transfers (TXA, TAX, TYA, TAY, etc) not setting the N and Z flags correctly.
+Added writing to files, in FAT32 only so far.
+
+Release 0.5.2.0 
+---------------
+Added SD Card support for FAT32.
+
+Release 0.5.1.0 
+---------------
+Added tools to convert "bin" and "hex" files to PGX.
+
+Release 0.5.0.2
+---------------
+Finally merged drone84's ISO changes.
+Added ISO MBR and filesystem type detection.
+If an MBR is not present in the ISO is no present, one is created, to match the filesystem type.
+Verified that BASIC is able to load and save from/to FAT32 with 512 byte clusters.
+
+Release 0.5.0.1
+---------------
+Added pixel doubling and high-resolution mode.
+Added Master Control Registry button to the Memory Window.
+
+Release 0.5.0.0
+---------------
+First implementation of Vicky II.
+
+Release 0.4.2.0
+---------------
+Added SOL support.
+
+Release 0.4.1.13
+----------------
+Fixed the tile editor issue: it required the bitmap bit set in MCR.
+Fixed BCD addition for 16 bit integers.
+
+Release 0.4.1.12
+----------------
+After running MVN or MVP, set the databank to the destination bank.
+Calling SOF at the end of the Graphics Paint function.  This appears to make things smoother.
+Some minor optimization for text drawing.
+
+Release 0.4.1.11
+----------------
+Fixed MCR bug: the graphics mode overrides the text mode.  Text is only drawn when MCR & 7 == 1, 3 or 7.
+
+Release 0.4.1.10
+----------------
+Fixed a few issues with the Tile Editor - now you can add tiles by dragging the mouse (instead of clicking).
+
+Release 0.4.1.9
+---------------
+Fixed bug #11 - https://github.com/Trinity-11/FoenixIDE/issues/11.
+Added the ability to add Watches from the CPU Window - it's much easier is less error prone.
+Added a button to the Watch List to Go to the Memory Page in the Memory Window.
+Added the ability to Save and Load watches, instead of forcing users to save a project file.
+
+Release 0.4.1.8
+---------------
+Added the Memory Watch window.
+Removed the Step input box from the CPU Window and replaced with the Reset button.
+Added the Label Overlay button - to allow users to add labels on-demand.
+
+Release 0.4.1.7
+---------------
+Updated the look of the virtual joystick.
+Updated the StepOver functionality to for BRA, BRL, JML, JMP.
+Fixed issue with the CPUWindow crashing Visual Studio: this was caused by the timer1 control in the RegistryDisplay component.
+
+Release 0.4.1.5
+---------------
+Fixed generation of shortnames in SD Card code.
+Fixed an issue with GDI+, that occured on Reset.
+
+Release 0.4.1.4
+---------------
+Fixed the PLP setting the NZ flags.  This was incorrect, obviously.
+Fixed the RTI command setting the bank
+
+Release 0.4.1.3
+---------------
+Optimizing graphics rendering.  Removing unneeded Bitmap.Locks.  
+Passing the BitmapData structure by reference.
+Fixed LDY 0,b,X to return data of the correct register width.
+
+Release 0.4.1.2
+---------------
+Optimized the Program Counter, as GetLongPC was using 5% or more of the CPU.
+Added more Gabe SD Card emulation.
+Added NZ flags to Pull operations.
+Added Drag'n'drop operation of Hex files into the main window.
+Fixed Fetch function.  For large datasets, this was very very slow.
+
+Release 0.4.1.1
+---------------
+Fixed a problem with absolute indexed values reading two bytes even when the register width is 1.
+Added the split Accumulator Control to the CPU window.  This allows us to see the value of B even when the 
+accumulator width is 1.
+
+Release 0.4.1.0
+---------------
+Starting the Virtual SD Card.
+
+Release 0.4.0.1
+---------------
+Added the random number generator at address: $AF:E884.
+Started to code the joystick implementation using multimedia library instead of virtual joystick.
+Tweaked the GPU to emulate the LUT bug in Vicky (i.e. LUT0 is not used).
+Fixed the emulated CPU compare method to properly handle the Negative flag (thanks to gadget for reporting the issue).
+Stop the CPU when the next instruction would exceed the RAM bounds.
+Added a capacity dropdown to the SDCard form.
+
+Release 0.4.0.0
+---------------
+Added the Character Editor, under the Tools menu.
+This application allows for editing of font data for the C256 Foenix.
+CPU is now able to handle WAI opcode. When an interrupt is detected, continue at the next line.
+
+Release 0.3.1.2
+---------------
+Started to use the Multimedia Timer to improve drawing time.
+Updated the Bitmap loader to allow uploading of bin files directly anywhere in memory.
+Tied the CPU thread to the CPU Window.  Not sure why this wasn't done before.
+Adjusted loading and starting of the system without re-initializing memory.
+Fixed slow GPU FPS (frames per second) when drawing tiles.
+Fixed a problem in the UploaderWindow that was resetting vectors to 0, instead of leaving existing values untouched.
+Added a Save button to the MemoryWindow, when downloading from the Foenix.
+
+Release 0.3.1.1
+---------------
+Fixed the Uploader code to properly assign reset vector values.
+
+Release 0.3.1.0
+---------------
+Fixed several stability issues - especially related to "Restart", which wasn't resetting the stack register.
+
+Release 0.3.0.0
+---------------
+Fixed the memory manager for the FMX board.  Added the DIP switches and tied them to memory addresses.
+
+Release 0.2.7.3
+---------------
+Fixed a few issues with the Flash commands delay.  Also added the countdown timer.
+
+Release 0.2.7.0
+---------------
+Added the Flash command to the Uploader dialog.
+
+Release 0.2.6.3
+---------------
+Fixed a problem with MVN/MVP when Accumulator was #$FFFF.
+More SD card support.  The directories are now being read properly.
+
+Release 0.2.6.0
+---------------
+Added SD Card support.
+
+Release 0.2.5.2
+---------------
+Fixed the Carry and Overflow flags in ADC and SBC in 8 bit mode.
+Added Unit Test project, finally.
+
+Release 0.2.5.1
+---------------
+Fixed "Load Hex w/o Zeroing": adding the runtime parameters messed this up.
+
+Release 0.2.5.0
+---------------
+Added runtime parameters: -r,--run to autorun; -h, --hex to load a hex program; -i,--irq to disable 'break on interrupts'.
+
+Release 0.2.4.9
+---------------
+Closing dialog boxes with ESC key.
+
+Release 0.2.4.8
+---------------
+Added correction of tiles displaying in the border.
+
+Release 0.2.4.7
+---------------
+Added correction of sprite displaying in the border.
+
+Release 0.2.4.6
+---------------
+Added fake joystick at rest ($9F).
+
+Release 0.2.4.5
+---------------
+Handling of ALT keys
+
+Release 0.2.4.4
+---------------
+Fixed the INC direct page opcode.
+
+Release 0.2.4.3
+---------------
+Fixed another problem with SendBinaryButton_Click, where the PageFF length was longer than the number of bytes in the buffer to write
+
+Release 0.2.4.2
+---------------
+Fixed the Z and N flags in the LDX and LDY opcodes.
+Fixed the XBA operation.  The High and Low bytes were not getting swapped properly.
+
+Release 0.2.4.1
+---------------
+Fixed an issue with the INC absolute opcode: when the accumulator is 16 bits, the two memory locations are updated (when an overflow occurs).
+
+Release 0.2.4.0
+---------------
+Fixed a problem with loading hex files without corresponding lst file.
+Fixed uploading page FF00 data.
+
+Release 0.2.3.8
+---------------
+Added the back-tick (or grave) key scancode.
+
+Release 0.2.3.7
+---------------
+Fixed the Negative flag not being assigned by LDA, LDX and LDY.
+Add implementation of SBC when decimal flag is set.
+
+Release 0.2.3.2
+---------------
+Added the UART device.
+Added the Serial Terminal window.
+Added BCD handling of additions.
+
+Release 0.2.3.1
+---------------
+Made some optimizations to the code to get to 12 Mhz in code execution.
+Made some optimizations to the GPU code to get to more than 60 frames per second.
+Created devices folder to help make the code clearer.
+
+Release 0.2.2.12
+----------------
+Added uploading of HEX files.  This includes the handling of the page FF interrupt vectors.
+
+Release 0.2.2.8
+---------------
+Added the Real-Time Clock.
+
+Release 0.2.2.7
+---------------
+Added interrupt handling for keyboard key presses.
+
+Release 0.2.2.6
+---------------
+Added the flashing cursor with the display of text.
+Handling bit $80 of the MCR to skip all display of graphics.
+
+Release 0.2.2.3
+---------------
+Added Gamma Correction when MCR Gamma Bit is set.
+
+Release 0.2.2.3
+---------------
+Made the memory window aware of the loaded length.
+Added a new default fontset "Bm437_PhoenixEGA_8x8".
+
+Release 0.2.2.2
+---------------
+Cleaned up the Tile Editor to be updated when images are loaded.
+Added more keyboard handling code.
+
+Release 0.2.2.1
+---------------
+Added the "Step Over" button.
+Attempted to move the context buttons out of the way.
+
+Release 0.2.2.0
+---------------
+Added the Tile Editor.  Load tiles using the Bitmap Loader or by running code in the emulator.
+Tiles can only be saved via the FNXML export, in the Memory Window.
+
+Release 0.2.1.0
+---------------
+Made the CPU window multi-threaded and not timer based.  Performance is much improved.
+Fixed memory leak due to displaying too many line items in the CPU window.
+Added the +, - and "Mem" buttons to allow adding breakpoints and jumping to memory easily.
+Fixed a minor issue with the file size of the bitmap loader.
+CPU window is now double-buffered and allows drawing of breakpoints.
+
+Release 0.2.0.9
+---------------
+* Added Long fetch from the C256 unit.
+* Fixed the memory window to only allow typing in the Start Address.
+* Fixed the incorrect PC that gets pushed into the stack when BRK is called.
+* Added the implementation to RTI.
+
+Release 0.2.0.8
+---------------
+* Fixed the MVN and MVP opcodes.
+* Added the PER opcode.
+
+Release 0.2.0.7
+---------------
+* Added Fetch from C256
+
+Release 0.2.0.6
+---------------
+* Added the FoenixIDE.exe in the bin\Debug folder.
+* Readded MainWindow.cs - the file was deleted by error.
+* Added opcode for PEA and PEI.
+* Fixed the GPU to draw the border properly.
+* Added SDCARD handling, such that it will initialize.
+* Added KEYBOARD handling, such that it will initialize.
+
+Release 0.2.0.5
+---------------
+* Added validation of the Load Hex file.  This prevents loading "bin" files.
+* Added the About form, which reads the version from the Assembly file.
+* Modified the Uploader Window to allow uploading of memory directly to the machine.
+
+Release 0.2.0.4
+---------------
+* Added a timed event whenever the CODEC Write address ($AF:E822) is written to, to reset the value to 0.
+* Modified the Memory Window to allow direct entry of values, instead of using an InputBox.
+
+Release 0.2.0.3
+---------------
+* Changed file extension of Foenix IDE export files to .FNXML.
+* Added tileset loading.  The feature expected a bitmap of 256 x 256.
+* Added importing of 24 bpp images.  Only 256 colors are allowed.
+
+Release 0.2.0.2
+---------------
+* Added loading of font from live memory during display cycle, instead of using hard-coded font files.
+* Fixed memory leak which was caused by not disposing of the displayed bitmap.
+* Use border color when in text mode.
+* Added highlight box to memory window.
+
+Release 0.2.0.1
+---------------
+* Fixed a bug that cause the IDE to crash when adding a breakpoint with no text.
+* Memory Window is now aware of the mouse pointer position and display the address and value under the pointer.
+* Allow modification of memory window address.
+* Uploader window only allows 6MBaud uploads.
+* Added Load Hex File w/o Zeroing.  This way a Hex file can be loading without affecting existing memory.
+
