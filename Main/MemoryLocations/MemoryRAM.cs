@@ -41,6 +41,16 @@ namespace FoenixIDE.MemoryLocations
             this.length = Length;
             this.endAddress = StartAddress + Length - 1;
             data = new byte[Length];
+
+
+            if (this.GetType() == typeof(FoenixIDE.Simulator.Devices.CodecRAM) && Length == 4)
+            {
+                System.Diagnostics.Debugger.Break();
+                data[0] = 0xca;
+                data[1] = 0xcb;
+                data[2] = 0xcc;
+                data[3] = 0xcd;
+            }
         }
 
         private MemoryRAM()
@@ -52,6 +62,11 @@ namespace FoenixIDE.MemoryLocations
         /// </summary>
         public void Zero()
         {
+
+            if (this.GetType() == typeof(FoenixIDE.Simulator.Devices.CodecRAM) && Length == 4)
+            {
+                System.Diagnostics.Debugger.Break();
+            }
             Array.Clear(data, 0, Length);
         }
 
@@ -62,6 +77,11 @@ namespace FoenixIDE.MemoryLocations
         /// <returns></returns>
         public virtual byte ReadByte(int Address)
         {
+            if (this.GetType() == typeof(FoenixIDE.Simulator.Devices.CodecRAM) && Address == 2 && Length == 4)
+            {
+                System.Diagnostics.Debugger.Break();
+            }
+
             var d = data;
             if (Address >= 0 && Address < Length)
                 return d[Address];
@@ -95,6 +115,11 @@ namespace FoenixIDE.MemoryLocations
 
         internal void Load(byte[] SourceData, int SrcStart, int DestStart, int copyLength)
         {
+
+            if (this.GetType() == typeof(FoenixIDE.Simulator.Devices.CodecRAM) && Length == 4)
+            {
+                System.Diagnostics.Debugger.Break();
+            }
             var d = data;
             for (int i = 0; i < copyLength; i++)
             {
@@ -104,6 +129,11 @@ namespace FoenixIDE.MemoryLocations
 
         public virtual void WriteByte(int Address, byte Value)
         {
+            if (this.GetType() == typeof(FoenixIDE.Simulator.Devices.CodecRAM) && Length == 4)
+            {
+                System.Diagnostics.Debugger.Break();
+            }
+
             var d = data;
             d[Address] = Value;
         }
@@ -117,12 +147,22 @@ namespace FoenixIDE.MemoryLocations
         // Duplicate a memory block
         internal void Duplicate(int SourceAddress, int DestAddress, int Length)
         {
+
+            if (this.GetType() == typeof(FoenixIDE.Simulator.Devices.CodecRAM) && Length == 4)
+            {
+                System.Diagnostics.Debugger.Break();
+            }
             var d = data;
             System.Array.Copy(d, SourceAddress, d, DestAddress, Length);
         }
 
         public void CopyIntoBuffer(int srcAddress, int srcLength, byte[] buffer)
         {
+
+            if (this.GetType() == typeof(FoenixIDE.Simulator.Devices.CodecRAM) && Length == 4)
+            {
+                System.Diagnostics.Debugger.Break();
+            }
             var d = data;
             System.Array.Copy(d, srcAddress, buffer, 0, srcLength);
         }
@@ -130,6 +170,11 @@ namespace FoenixIDE.MemoryLocations
         // Copy data from a buffer to RAM
         public void CopyBuffer(byte[] src, int srcAddress, int destAddress, int length)
         {
+
+            if (this.GetType() == typeof(FoenixIDE.Simulator.Devices.CodecRAM) && Length == 4)
+            {
+                System.Diagnostics.Debugger.Break();
+            }
             var d = data;
             System.Array.Copy(src, srcAddress, d, destAddress, length);
         }

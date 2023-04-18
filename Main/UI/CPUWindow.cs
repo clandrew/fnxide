@@ -50,6 +50,7 @@ namespace FoenixIDE.UI
             DisableIRQs(true);
             registerDisplay1.RegistersReadOnly(false);
             cpuLogger = new CPULogger();
+            cpuLogCheckBox.Checked = true;
         }
 
         public void SetKernel(FoenixSystem kernel)
@@ -704,7 +705,6 @@ namespace FoenixIDE.UI
 
             if (!kernel.CPU.ExecuteNext())
             {
-
                 int nextPC = kernel.CPU.PC;
                 if (nextPC > MemoryLimit)
                 {
