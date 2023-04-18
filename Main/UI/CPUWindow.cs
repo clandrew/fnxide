@@ -704,9 +704,10 @@ namespace FoenixIDE.UI
             DebugLine line = null;
             int previousPC = kernel.CPU.PC;
 
-            if (previousPC == 0x3974dc)
+            if (previousPC == 0x3974eb)
             {
-                System.Diagnostics.Debugger.Break();
+                // Terminate here. The bug is that we hang, and don't ever get here.
+                System.Windows.Forms.Application.Exit();
             }
 
             if (!kernel.CPU.ExecuteNext())
