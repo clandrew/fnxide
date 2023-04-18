@@ -153,8 +153,11 @@ namespace FoenixIDE.Simulator.Devices
                         CPULogger.Log("Keyboard[041]:     data[4] became " + data[4]);
 
                         TriggerMouseInterrupt();
+                        CPULogger.Log("Keyboard[041]:     ps2PacketCntr is " + ps2PacketCntr);
+                        CPULogger.Log("Keyboard[041]:     packetLength is " + packetLength);
                         if (ps2PacketCntr == packetLength)
                         {
+                            CPULogger.Log("Keyboard[041]:     ps2PacketCntr and  packetLength are being set to 0.");
                             ps2PacketCntr = 0;
                             mouseDevice = false;
                             packetLength = 0;
