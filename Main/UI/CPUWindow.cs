@@ -50,6 +50,8 @@ namespace FoenixIDE.UI
             DisableIRQs(true);
             registerDisplay1.RegistersReadOnly(false);
             cpuLogger = new CPULogger();
+            kernel.MemMgr.KEYBOARD.CPULogger = cpuLogger;
+            cpuLogCheckBox.Checked = true;
         }
 
         public void SetKernel(FoenixSystem kernel)
@@ -1178,7 +1180,7 @@ namespace FoenixIDE.UI
             }
         }
 
-        private class CPULogger : IDisposable
+        public class CPULogger : IDisposable
         {
             StreamWriter stream = null;
             int fileIndex = 0;
