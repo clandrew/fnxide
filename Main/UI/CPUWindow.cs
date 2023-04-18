@@ -702,6 +702,11 @@ namespace FoenixIDE.UI
             DebugLine line = null;
             int previousPC = kernel.CPU.PC;
 
+            if (previousPC == 0x3974dc)
+            {
+                System.Diagnostics.Debugger.Break();
+            }
+
             if (!kernel.CPU.ExecuteNext())
             {
 

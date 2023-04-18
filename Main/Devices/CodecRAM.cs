@@ -12,7 +12,7 @@ namespace FoenixIDE.Simulator.Devices
         {
         }
 
-        public override async void WriteByte(int Address, byte Value)
+        public override void WriteByte(int Address, byte Value)
         {
             // TODO: Add implementation here. 
             // In particular, setting byte 2 (CODEC_WR_CTRL) to 1 causes command high and low to be 
