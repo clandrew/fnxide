@@ -48,6 +48,7 @@ namespace FoenixIDE.UI
         public static MainWindow Instance = null;
         private delegate void WriteCPSFPSFunction(string CPS, string FPS);
         private bool fullScreen = false;
+        private FoenixIDE.UI.CPUWindow.CPULogger cpuLogger = null;
 
         public MainWindow(Dictionary<string, string> context)
         {
@@ -154,9 +155,10 @@ namespace FoenixIDE.UI
 
         private void BasicWindow_Load(object sender, EventArgs e)
         {
-            kernel = new FoenixSystem(version, defaultKernel);
+            cpuLogger = new FoenixIDE.UI.CPUWindow.CPULogger();
+            kernel = new FoenixSystem(version, defaultKernel, cpuLogger);
             terminal = new SerialTerminal();
-            ShowDebugWindow();
+            ShowDebugWindow(cpuLogger);
             ShowMemoryWindow();
 
             // Now that the kernel is initialized, allocate variables to the GPU
@@ -296,7 +298,7 @@ namespace FoenixIDE.UI
                 gpu.Refresh();
                 if (kernel.lstFile != null)
                 {
-                    ShowDebugWindow();
+                    ShowDebugWindow(cpuLogger);
                     ShowMemoryWindow();
                 }
                 ResetSDCard();
@@ -304,15 +306,15 @@ namespace FoenixIDE.UI
             }
         }
 
-        private void ShowDebugWindow()
+        private void ShowDebugWindow(FoenixIDE.UI.CPUWindow.CPULogger logger)
         {
             cPUToolStripMenuItem.Enabled = true;
             if (debugWindow == null || debugWindow.IsDisposed)
             {
                 kernel.CPU.DebugPause = true;
-                debugWindow = new UI.CPUWindow
+                debugWindow = new UI.CPUWindow(logger)
                 {
-                    Top = Screen.PrimaryScreen.WorkingArea.Top,
+                    Top = Screen.PrimaryScreen.WorkingArea.Top
                 };
                 debugWindow.Left = Screen.PrimaryScreen.WorkingArea.Width - debugWindow.Width;
                 debugWindow.SetDebugWindowMode(Simulator.Properties.Settings.Default.TranscriptModeDebugger ? CPUWindow.DebugWindowMode.Transcipt : CPUWindow.DebugWindowMode.Default);
@@ -763,7 +765,7 @@ namespace FoenixIDE.UI
 
         private void CPUToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShowDebugWindow();
+            ShowDebugWindow(cpuLogger);
         }
 
         private void MemoryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -924,7 +926,7 @@ namespace FoenixIDE.UI
                     gpu.Refresh();
                     debugWindow.Pause();
                     SetDipSwitchMemory();
-                    ShowDebugWindow();
+                    ShowDebugWindow(cpuLogger);
                     if (version == BoardVersion.RevJr)
                     {
                         // Now update other registers

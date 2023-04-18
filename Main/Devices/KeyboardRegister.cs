@@ -15,8 +15,9 @@ namespace FoenixIDE.Simulator.Devices
         public TriggerInterruptDelegate TriggerMouseInterrupt;
         public FoenixIDE.UI.CPUWindow.CPULogger CPULogger;
 
-        public KeyboardRegister(int StartAddress, int Length) : base(StartAddress, Length)
+        public KeyboardRegister(int StartAddress, int Length, FoenixIDE.UI.CPUWindow.CPULogger logger) : base(StartAddress, Length)
         {
+            CPULogger = logger;
         }
 
         // This is used to simulate the Keyboard Register

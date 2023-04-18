@@ -43,14 +43,13 @@ namespace FoenixIDE.UI
         }
         private DebugWindowMode currentDebugWindowMode = DebugWindowMode.Default;
 
-        public CPUWindow()
+        public CPUWindow(CPULogger logger)
         {
             InitializeComponent();
             Instance = this;
             DisableIRQs(true);
             registerDisplay1.RegistersReadOnly(false);
-            cpuLogger = new CPULogger();
-            kernel.MemMgr.KEYBOARD.CPULogger = cpuLogger;
+            cpuLogger = logger;
             cpuLogCheckBox.Checked = true;
         }
 

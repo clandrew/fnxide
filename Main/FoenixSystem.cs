@@ -26,7 +26,7 @@ namespace FoenixIDE
         public SortedList<string, WatchedMemory> WatchList = new SortedList<string, WatchedMemory>();
         private string LoadedKernel;
 
-        public FoenixSystem(BoardVersion version, string DefaultKernel)
+        public FoenixSystem(BoardVersion version, string DefaultKernel, FoenixIDE.UI.CPUWindow.CPULogger logger)
         {
             boardVersion = version;
 
@@ -90,7 +90,7 @@ namespace FoenixIDE
 
                     // Special devices
                     MATH = new MathCoproRegister(MemoryMap.MATH_START, MemoryMap.MATH_END - MemoryMap.MATH_START + 1), // 48 bytes
-                    KEYBOARD = new KeyboardRegister(keyboardAddress, 5),
+                    KEYBOARD = new KeyboardRegister(keyboardAddress, 5, logger),
                     SDCARD = sdcard,
                     INTERRUPT = new InterruptController(MemoryMap.INT_PENDING_REG0, 4),
                     UART1 = new UART(MemoryMap.UART1_REGISTERS, 8),
@@ -118,7 +118,7 @@ namespace FoenixIDE
                     RAM = new MemoryRAM(MemoryMap.RAM_START, memSize),
                     // vicky will store 4 pages of data
                     VICKY = new MemoryRAM(0, 4 * 0x2000),
-                    KEYBOARD = new KeyboardRegister(keyboardAddress, 5),
+                    KEYBOARD = new KeyboardRegister(keyboardAddress, 5, logger),
                     MATH = new MathCoproRegister(MemoryMap.MATH_START_JR, MemoryMap.MATH_END_JR - MemoryMap.MATH_START_JR + 1), // 32 bytes
                     SDCARD = sdcard,
                     INTERRUPT = new InterruptController(MemoryMap.INT_PENDING_REG0_JR, 2),
