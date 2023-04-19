@@ -32,6 +32,7 @@ namespace KGySoft.CoreLibraries
         private volatile float interval;
         private volatile float ignoreElapsedThreshold = Single.PositiveInfinity;
         private volatile bool isRunning;
+        private Thread timerThread;
 
         /// <summary>
         /// Occurs when the <see cref="Interval"/> elapses.
@@ -140,8 +141,8 @@ namespace KGySoft.CoreLibraries
                 return;
 
             isRunning = true;
-            Thread thread = new Thread(ExecuteTimer) { Priority = ThreadPriority.Highest };
-            thread.Start();
+            timerThread = new Thread(ExecuteTimer) { Priority = ThreadPriority.Highest };
+            timerThread.Start();
         }
 
         /// <summary>
@@ -231,6 +232,12 @@ namespace KGySoft.CoreLibraries
             }
 
             stopwatch.Stop();
+        }
+
+        public void DeleteThread()
+        {
+            // Used when the application closes.
+            timerThread.Abort();
         }
     }
 }

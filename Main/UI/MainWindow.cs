@@ -860,7 +860,7 @@ namespace FoenixIDE.UI
 
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            gpu.StopTimer();
+            gpu.DeleteTimer();
             kernel.CPU.DebugPause = true;
             gpu.GpuUpdated -= Gpu_Update_Cps_Fps;
             gpu.StartOfFrame = null;
