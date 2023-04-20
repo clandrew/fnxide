@@ -5,6 +5,14 @@ namespace FoenixIDE.Simulator.Devices
 {
     public class KeyboardRegister: MemoryLocations.MemoryRAM
     {
+        // This doesn't currently try to be an accurate implementation of 8042 / SuperIO controller.
+        // The real 8042 device makes progress on its inputs on its own timeline separate from CPU.
+        
+        // As a loose approximation, this implementation makes progress on a timeline locked to CPU.
+        // More specifically it makes progress on buffered mouse data in response to CPU reads of KDATA
+        // and KDCTL, since polling for changes in input status will generally involve those.
+        // If we later find this isn't accurate enough, it can be worth re-visiting.
+
         private bool mouseDevice = false;
         private bool breakKey = false;
         private byte ps2PacketCntr = 0;
@@ -23,8 +31,7 @@ namespace FoenixIDE.Simulator.Devices
         {
             // In order to avoid an infinite loop, we write to the device directly
             data[Address] = Value;
-            
-            
+                        
             switch (Address)
             {
                 case 0:
@@ -102,47 +109,63 @@ namespace FoenixIDE.Simulator.Devices
             }
         }
 
+        private void ProcessMouseAndBreakKey()
+        {
+            if (packetLength == 0)
+                return;
+
+            // raise interrupt
+            if (mouseDevice)
+            {
+                // send the next byte in the packet
+                data[4] = ps2packet[ps2PacketCntr++];
+                TriggerMouseInterrupt();
+                if (ps2PacketCntr == packetLength)
+                {
+                    ps2PacketCntr = 0;
+                    mouseDevice = false;
+                    packetLength = 0;
+                    data[4] = 0;
+                }
+            }
+            else if (breakKey)  // this doesn't work yet
+            {
+                // send the next byte in the packet
+                data[0] = ps2packet[ps2PacketCntr++];
+                data[4] = 0;
+                TriggerKeyboardInterrupt();
+                if (ps2PacketCntr == packetLength)
+                {
+                    ps2PacketCntr = 0;
+                    breakKey = false;
+                    packetLength = 0;
+                }
+            }
+        }
+
         public override byte ReadByte(int Address)
         {
             // Whenever the buffer is read, set the buffer to empty.
             if (Address == 0)
             {
-                if (!mouseDevice && !breakKey)
+                if (mouseDevice || breakKey)
+                {
+                    ProcessMouseAndBreakKey();
+                }
+                else
                 {
                     data[4] = 0;
                 }
-                else if (packetLength != 0)
-                {
-                    
 
-                    // raise interrupt
-                    if (mouseDevice)
-                    {
-                        // send the next byte in the packet
-                        data[4] = ps2packet[ps2PacketCntr++];
-                        TriggerMouseInterrupt();
-                        if (ps2PacketCntr == packetLength)
-                        {
-                            ps2PacketCntr = 0;
-                            mouseDevice = false;
-                            packetLength = 0;
-                        }
-                    } 
-                    else if (breakKey)  // this doesn't work yet
-                    {
-                        // send the next byte in the packet
-                        data[0] = ps2packet[ps2PacketCntr++];
-                        data[4] = 0;
-                        TriggerKeyboardInterrupt();
-                        if (ps2PacketCntr == packetLength)
-                        {
-                            ps2PacketCntr = 0;
-                            breakKey = false;
-                            packetLength = 0;
-                        }
-                    }
-                }
                 return data[0];
+            }
+            else if (Address == 4) // Read KDCTL
+            {
+                if (mouseDevice || breakKey)
+                {
+                    ProcessMouseAndBreakKey();
+                }
+                return data[4];
             }
             else if (Address == 5)
             {
