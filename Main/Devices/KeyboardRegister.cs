@@ -125,6 +125,7 @@ namespace FoenixIDE.Simulator.Devices
                     ps2PacketCntr = 0;
                     mouseDevice = false;
                     packetLength = 0;
+                    data[4] = 0;
                 }
             }
             else if (breakKey)  // this doesn't work yet
@@ -150,11 +151,6 @@ namespace FoenixIDE.Simulator.Devices
                 if (mouseDevice || breakKey)
                 {
                     ProcessMouseAndBreakKey();
-
-                    if (!mouseDevice && !breakKey)
-                    {
-                        data[4] = 0;
-                    }
                 }
                 else
                 {
@@ -168,11 +164,6 @@ namespace FoenixIDE.Simulator.Devices
                 if (mouseDevice || breakKey)
                 {
                     ProcessMouseAndBreakKey();
-
-                    if (!mouseDevice && !breakKey)
-                    {
-                        data[4] = 0;
-                    }
                 }
                 return data[4];
             }
