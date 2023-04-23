@@ -211,7 +211,9 @@ namespace FoenixIDE.UI
             this.loadFNXMLFileToolStripMenuItem,
             this.saveProjectToolStripMenuItem,
             this.menuOpenHexFile,
+#if DEBUG
             this.openExecutableFileCPULogToolStripMenuItem,
+#endif
             this.loadWatchListToolStripMenuItem,
             this.saveWatchListToolStripMenuItem,
             this.exitToolStripMenuItem});
