@@ -457,6 +457,13 @@ namespace FoenixIDE.UI
             }
         }
 
+#if DEBUG
+        public void AddBreakpointProgrammatic(int address) // Not through the UI.
+        {
+            knl_breakpoints.AddFromInt(address);
+        }
+#endif
+
         private void AddBPButton_Click(object sender, EventArgs e)
         {
             if (BPCombo.Text.Trim() != "")

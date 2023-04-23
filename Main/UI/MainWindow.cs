@@ -49,6 +49,11 @@ namespace FoenixIDE.UI
         private delegate void WriteCPSFPSFunction(string CPS, string FPS);
         private bool fullScreen = false;
 
+#if DEBUG
+        // For example, set to 0x390412 for MVN $38,$00 in kernelcode.
+        private int? programmaticBreakpoint = null;
+#endif
+
         public MainWindow(Dictionary<string, string> context)
         {
             bool autoRunCommandLineSpecified = false;
@@ -278,6 +283,12 @@ namespace FoenixIDE.UI
             }
             autorunEmulatorToolStripMenuItem.Checked = autoRun;
             transcriptModeDebuggerToolStripMenuItem.Checked = Simulator.Properties.Settings.Default.TranscriptModeDebugger;
+#if DEBUG
+            if (programmaticBreakpoint != null)
+            {
+                debugWindow.AddBreakpointProgrammatic(programmaticBreakpoint.Value);
+            }
+#endif
         }
 
         private void CenterForm(Form form)
