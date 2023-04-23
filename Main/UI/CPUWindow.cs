@@ -744,6 +744,7 @@ namespace FoenixIDE.UI
                     {
                         UpdateTraceTimer.Enabled = false;
                         kernel.CPU.DebugPause = true;
+                        writeToTranscriptEnablement = WriteToTranscriptEnablement.Enabled;
                         //queue.Clear();
                     }
                     if (kernel.CPU.Pins.GetInterruptPinActive && !kernel.CPU.Flags.IrqDisable)
@@ -841,6 +842,11 @@ namespace FoenixIDE.UI
                 transcript.RemoveAt(0);
             }
             transcript.Add(line);
+
+            if (currentDebugWindowMode == DebugWindowMode.Transcipt)
+            {
+                DebugPanel.Invalidate();
+            }
         }
 
         private void GenerateNextInstruction(int pc)
