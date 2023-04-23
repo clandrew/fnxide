@@ -904,6 +904,21 @@ namespace FoenixIDE.UI
             }
         }
 
+        private void openExecutableFileCPULogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                Filter = "Hex Files|*.hex|PGX Files|*.pgx|PGZ Files|*.pgz",
+                Title = "Select an Executable File",
+                CheckFileExists = true
+            };
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                LoadExecutableFile(dialog.FileName);
+                debugWindow.EnableCpuLog();
+            }
+        }
+
         /*
          * Read a Foenix XML file
          */

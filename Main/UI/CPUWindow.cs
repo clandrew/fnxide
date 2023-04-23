@@ -1227,6 +1227,11 @@ namespace FoenixIDE.UI
             }
         }
 
+        public void EnableCpuLog() // For programmatic enablement of the checkbox.
+        {
+            cpuLogCheckBox.Checked = true;
+        }
+
         private void cpuLogCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (!cpuLogCheckBox.Checked)

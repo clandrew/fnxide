@@ -62,6 +62,7 @@ namespace FoenixIDE.UI
             this.mIDIToVGMConvertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autorunEmulatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.transcriptModeDebuggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.terminalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cPUToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -76,8 +77,8 @@ namespace FoenixIDE.UI
             this.checkForUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Tooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.transcriptModeDebuggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gpu = new FoenixIDE.Display.Gpu();
+            this.openExecutableFileCPULogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -210,6 +211,7 @@ namespace FoenixIDE.UI
             this.loadFNXMLFileToolStripMenuItem,
             this.saveProjectToolStripMenuItem,
             this.menuOpenHexFile,
+            this.openExecutableFileCPULogToolStripMenuItem,
             this.loadWatchListToolStripMenuItem,
             this.saveWatchListToolStripMenuItem,
             this.exitToolStripMenuItem});
@@ -220,42 +222,42 @@ namespace FoenixIDE.UI
             // loadFNXMLFileToolStripMenuItem
             // 
             this.loadFNXMLFileToolStripMenuItem.Name = "loadFNXMLFileToolStripMenuItem";
-            this.loadFNXMLFileToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.loadFNXMLFileToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
             this.loadFNXMLFileToolStripMenuItem.Text = "&Load Project...";
             this.loadFNXMLFileToolStripMenuItem.Click += new System.EventHandler(this.LoadFNXMLFileToolStripMenuItem_Click);
             // 
             // saveProjectToolStripMenuItem
             // 
             this.saveProjectToolStripMenuItem.Name = "saveProjectToolStripMenuItem";
-            this.saveProjectToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.saveProjectToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
             this.saveProjectToolStripMenuItem.Text = "&Save Project...";
             this.saveProjectToolStripMenuItem.Click += new System.EventHandler(this.SaveProjectToolStripMenuItem_Click);
             // 
             // menuOpenHexFile
             // 
             this.menuOpenHexFile.Name = "menuOpenHexFile";
-            this.menuOpenHexFile.Size = new System.Drawing.Size(184, 22);
+            this.menuOpenHexFile.Size = new System.Drawing.Size(241, 22);
             this.menuOpenHexFile.Text = "&Open Executable File";
             this.menuOpenHexFile.Click += new System.EventHandler(this.MenuOpenExecutableFile_Click);
             // 
             // loadWatchListToolStripMenuItem
             // 
             this.loadWatchListToolStripMenuItem.Name = "loadWatchListToolStripMenuItem";
-            this.loadWatchListToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.loadWatchListToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
             this.loadWatchListToolStripMenuItem.Text = "Load Watch List...";
             this.loadWatchListToolStripMenuItem.Click += new System.EventHandler(this.LoadWatchListToolStripMenuItem_Click);
             // 
             // saveWatchListToolStripMenuItem
             // 
             this.saveWatchListToolStripMenuItem.Name = "saveWatchListToolStripMenuItem";
-            this.saveWatchListToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.saveWatchListToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
             this.saveWatchListToolStripMenuItem.Text = "Save Watch List...";
             this.saveWatchListToolStripMenuItem.Click += new System.EventHandler(this.SaveWatchListToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -373,9 +375,17 @@ namespace FoenixIDE.UI
             this.autorunEmulatorToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
             this.autorunEmulatorToolStripMenuItem.Name = "autorunEmulatorToolStripMenuItem";
             this.autorunEmulatorToolStripMenuItem.Padding = new System.Windows.Forms.Padding(0, 2, 0, 1);
-            this.autorunEmulatorToolStripMenuItem.Size = new System.Drawing.Size(169, 23);
+            this.autorunEmulatorToolStripMenuItem.Size = new System.Drawing.Size(216, 23);
             this.autorunEmulatorToolStripMenuItem.Text = "Autorun Emulator";
             this.autorunEmulatorToolStripMenuItem.Click += new System.EventHandler(this.autorunEmulatorToolStripMenuItem_Click);
+            // 
+            // transcriptModeDebuggerToolStripMenuItem
+            // 
+            this.transcriptModeDebuggerToolStripMenuItem.CheckOnClick = true;
+            this.transcriptModeDebuggerToolStripMenuItem.Name = "transcriptModeDebuggerToolStripMenuItem";
+            this.transcriptModeDebuggerToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+            this.transcriptModeDebuggerToolStripMenuItem.Text = "Transcript-Mode Debugger";
+            this.transcriptModeDebuggerToolStripMenuItem.Click += new System.EventHandler(this.transcriptModeDebuggerToolStripMenuItem_Click);
             // 
             // windowsToolStripMenuItem
             // 
@@ -484,15 +494,6 @@ namespace FoenixIDE.UI
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
-            //
-            // transcriptModeDebuggerToolStripMenuItem
-            // 
-            this.transcriptModeDebuggerToolStripMenuItem.CheckOnClick = true;
-            this.transcriptModeDebuggerToolStripMenuItem.Name = "transcriptModeDebuggerToolStripMenuItem";
-            this.transcriptModeDebuggerToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-            this.transcriptModeDebuggerToolStripMenuItem.Text = "Transcript-Mode Debugger";
-            this.transcriptModeDebuggerToolStripMenuItem.Click += new System.EventHandler(this.transcriptModeDebuggerToolStripMenuItem_Click);
-            // 
             // 
             // gpu
             // 
@@ -516,6 +517,13 @@ namespace FoenixIDE.UI
             this.gpu.MouseLeave += new System.EventHandler(this.Gpu_MouseLeave);
             this.gpu.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Gpu_MouseMove);
             this.gpu.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Gpu_MouseUp);
+            // 
+            // openExecutableFileCPULogToolStripMenuItem
+            // 
+            this.openExecutableFileCPULogToolStripMenuItem.Name = "openExecutableFileCPULogToolStripMenuItem";
+            this.openExecutableFileCPULogToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.openExecutableFileCPULogToolStripMenuItem.Text = "Open Executable File + CPU log";
+            this.openExecutableFileCPULogToolStripMenuItem.Click += new System.EventHandler(this.openExecutableFileCPULogToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -598,6 +606,7 @@ namespace FoenixIDE.UI
         private System.Windows.Forms.ToolStripMenuItem convertHexToPGZToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem transcriptModeDebuggerToolStripMenuItem;
         public Gpu gpu;
+        private System.Windows.Forms.ToolStripMenuItem openExecutableFileCPULogToolStripMenuItem;
     }
 }
 
