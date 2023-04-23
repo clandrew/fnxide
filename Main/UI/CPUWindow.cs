@@ -461,7 +461,7 @@ namespace FoenixIDE.UI
         {
             if (BPCombo.Text.Trim() != "")
             {
-                int newValue = knl_breakpoints.Add(BPCombo.Text.Trim().Replace(">",""));
+                int newValue = knl_breakpoints.AddFromString(BPCombo.Text.Trim().Replace(">",""));
                 if (newValue > -1)
                 {
                     BPCombo.Text = knl_breakpoints.Format(newValue.ToString("X"));
@@ -573,7 +573,7 @@ namespace FoenixIDE.UI
                 DebugLine line = codeList[TopLineIndex + row];
                 // Set a breakpoint to the next address
                 int nextAddress = line.PC + line.commandLength;
-                int newValue = knl_breakpoints.Add(nextAddress.ToString("X"));
+                int newValue = knl_breakpoints.AddFromInt(nextAddress);
 
                 if (newValue != -1)
                 {
@@ -601,7 +601,7 @@ namespace FoenixIDE.UI
             {
                 // Set a breakpoint to the next address
                 int nextAddress = pc + line.commandLength;
-                int newValue = knl_breakpoints.Add(nextAddress.ToString("X"));
+                int newValue = knl_breakpoints.AddFromString(nextAddress.ToString("X"));
 
                 if (newValue != -1)
                 {

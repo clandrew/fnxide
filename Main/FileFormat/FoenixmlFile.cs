@@ -373,7 +373,7 @@ namespace FoenixIDE.Simulator.FileFormat
                     if (reader.Name.Equals("breakpoint"))
                     {
                         string address = reader.GetAttribute("address");
-                        BreakPoints.Add(address);
+                        BreakPoints.AddFromString(address);
                         continue;
                     }
                     if (reader.Name.Equals("project"))

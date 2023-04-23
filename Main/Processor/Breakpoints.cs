@@ -49,7 +49,8 @@ namespace FoenixIDE.Processor
             }
         }
 
-        public int Add(string HexAddress)
+
+        public int AddFromString(string HexAddress)
         {
             try
             {
@@ -60,6 +61,21 @@ namespace FoenixIDE.Processor
             catch (Exception ex)
             {
                 global::System.Diagnostics.Debug.WriteLine("Breakpoints.Add(" + HexAddress + ")");
+                global::System.Diagnostics.Debug.WriteLine("Message:  " + ex.Message);
+                return -1;
+            }
+        }
+
+        public int AddFromInt(int address)
+        {
+            try
+            {
+                this.Add(address, GetHex(address));
+                return address;
+            }
+            catch (Exception ex)
+            {
+                global::System.Diagnostics.Debug.WriteLine("Breakpoints.Add(" + address + ")");
                 global::System.Diagnostics.Debug.WriteLine("Message:  " + ex.Message);
                 return -1;
             }
