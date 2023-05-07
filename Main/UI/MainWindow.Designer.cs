@@ -224,42 +224,42 @@ namespace FoenixIDE.UI
             // loadFNXMLFileToolStripMenuItem
             // 
             this.loadFNXMLFileToolStripMenuItem.Name = "loadFNXMLFileToolStripMenuItem";
-            this.loadFNXMLFileToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.loadFNXMLFileToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.loadFNXMLFileToolStripMenuItem.Text = "&Load Project...";
             this.loadFNXMLFileToolStripMenuItem.Click += new System.EventHandler(this.LoadFNXMLFileToolStripMenuItem_Click);
             // 
             // saveProjectToolStripMenuItem
             // 
             this.saveProjectToolStripMenuItem.Name = "saveProjectToolStripMenuItem";
-            this.saveProjectToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.saveProjectToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.saveProjectToolStripMenuItem.Text = "&Save Project...";
             this.saveProjectToolStripMenuItem.Click += new System.EventHandler(this.SaveProjectToolStripMenuItem_Click);
             // 
             // menuOpenHexFile
             // 
             this.menuOpenHexFile.Name = "menuOpenHexFile";
-            this.menuOpenHexFile.Size = new System.Drawing.Size(241, 22);
+            this.menuOpenHexFile.Size = new System.Drawing.Size(184, 22);
             this.menuOpenHexFile.Text = "&Open Executable File";
             this.menuOpenHexFile.Click += new System.EventHandler(this.MenuOpenExecutableFile_Click);
             // 
             // loadWatchListToolStripMenuItem
             // 
             this.loadWatchListToolStripMenuItem.Name = "loadWatchListToolStripMenuItem";
-            this.loadWatchListToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.loadWatchListToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.loadWatchListToolStripMenuItem.Text = "Load Watch List...";
             this.loadWatchListToolStripMenuItem.Click += new System.EventHandler(this.LoadWatchListToolStripMenuItem_Click);
             // 
             // saveWatchListToolStripMenuItem
             // 
             this.saveWatchListToolStripMenuItem.Name = "saveWatchListToolStripMenuItem";
-            this.saveWatchListToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.saveWatchListToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.saveWatchListToolStripMenuItem.Text = "Save Watch List...";
             this.saveWatchListToolStripMenuItem.Click += new System.EventHandler(this.SaveWatchListToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -377,7 +377,7 @@ namespace FoenixIDE.UI
             this.autorunEmulatorToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
             this.autorunEmulatorToolStripMenuItem.Name = "autorunEmulatorToolStripMenuItem";
             this.autorunEmulatorToolStripMenuItem.Padding = new System.Windows.Forms.Padding(0, 2, 0, 1);
-            this.autorunEmulatorToolStripMenuItem.Size = new System.Drawing.Size(216, 23);
+            this.autorunEmulatorToolStripMenuItem.Size = new System.Drawing.Size(169, 23);
             this.autorunEmulatorToolStripMenuItem.Text = "Autorun Emulator";
             this.autorunEmulatorToolStripMenuItem.Click += new System.EventHandler(this.autorunEmulatorToolStripMenuItem_Click);
             // 
