@@ -104,6 +104,14 @@ namespace FoenixIDE.MemoryLocations
 
         public virtual void WriteByte(int Address, byte Value)
         {
+            if (Address >= data.Length)
+            {
+#if DEBUG
+                System.Diagnostics.Debugger.Break();
+#endif
+                return; // Out-of-bounds write
+            }
+
             var d = data;
             d[Address] = Value;
         }
