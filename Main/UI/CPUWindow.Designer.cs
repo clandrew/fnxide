@@ -269,7 +269,7 @@ namespace FoenixIDE.UI
             this.SecondPanel.Controls.Add(this.ClearTraceButton);
             this.SecondPanel.Location = new System.Drawing.Point(0, 25);
             this.SecondPanel.Name = "SecondPanel";
-            this.SecondPanel.Size = new System.Drawing.Size(287, 24);
+            this.SecondPanel.Size = new System.Drawing.Size(366, 24);
             this.SecondPanel.TabIndex = 5;
             // 
             // ClearTraceButton

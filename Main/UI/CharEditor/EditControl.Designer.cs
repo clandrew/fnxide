@@ -15,6 +15,8 @@
         {
             if (disposing && (components != null))
             {
+                borderPen.Dispose();
+                textBrush.Dispose();
                 components.Dispose();
                 borderPen.Dispose();
                 textBrush.Dispose();
