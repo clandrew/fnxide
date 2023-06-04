@@ -246,11 +246,5 @@ namespace KGySoft.CoreLibraries
 
             stopwatch.Stop();
         }
-
-        public void DeleteThread()
-        {
-            // Used when the application closes.
-            thread.Abort();
-        }
     }
 }

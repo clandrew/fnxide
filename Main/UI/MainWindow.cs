@@ -878,11 +878,32 @@ namespace FoenixIDE.UI
             }
         }
 
+        private void DisableTimers()
+        {
+            if (kernel.MemMgr.TIMER0 != null)
+            {
+                kernel.MemMgr.TIMER0.KillTimer();
+            }
+            if (kernel.MemMgr.TIMER1 != null)
+            {
+                kernel.MemMgr.TIMER1.KillTimer();
+            }
+            if (kernel.MemMgr.TIMER2 != null)
+            {
+                kernel.MemMgr.TIMER2.KillTimer();
+            }
+            if (kernel.MemMgr.RTC != null)
+            {
+                kernel.MemMgr.RTC.KillTimer();
+            }
+        }
+
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             gpu.GpuUpdated -= Gpu_Update_Cps_Fps;
             gpu.StopTimer();
             kernel.CPU.DebugPause = true;
+            DisableTimers();
             if (kernel.MemMgr.TIMER0 != null)
             {
                 kernel.MemMgr.TIMER0.KillTimer();
@@ -898,7 +919,6 @@ namespace FoenixIDE.UI
             gpu.StartOfFrame = null;
             gpu.StartOfLine = null;
             gpu.KillTimer();
-            gpu.DeleteTimer();
 
             ModeText.Text = "Shutting down CPU thread";
             if (kernel.CPU != null)

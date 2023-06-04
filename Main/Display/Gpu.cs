@@ -94,14 +94,6 @@ namespace FoenixIDE.Display
             }
         }
 
-        public void DeleteTimer()
-        {
-            hiresTimer.Enabled = false;
-            hiresTimer.Interval = 200;
-            hiresTimer.Elapsed -= GpuRefreshTimer_Tick;
-            hiresTimer.DeleteThread();
-        }
-
         public void StopTimer()
         {
             hiresTimer.Enabled = false;
