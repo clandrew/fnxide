@@ -102,6 +102,14 @@ namespace FoenixIDE.Display
             hiresTimer.DeleteThread();
         }
 
+        public void StopTimer()
+        {
+            hiresTimer.Enabled = false;
+            hiresTimer.Interval = 200;
+            hiresTimer.Elapsed -= GpuRefreshTimer_Tick;
+
+        }
+
         public void SetRefreshPeriod(uint time)
         {
             BLINK_RATE = (int)(1000 / time /2);
