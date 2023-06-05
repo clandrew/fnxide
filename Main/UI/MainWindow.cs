@@ -48,6 +48,7 @@ namespace FoenixIDE.UI
         public static MainWindow Instance = null;
         private delegate void WriteCPSFPSFunction(string CPS, string FPS);
         private bool fullScreen = false;
+        private bool cpuLogCommandLineArgSpecified = false;
 
 #if DEBUG
         // For example, set to 0x390412 for MVN $38,$00 in kernelcode.
@@ -107,6 +108,10 @@ namespace FoenixIDE.UI
                     }
 #endif
                     boardVersionCommandLineSpecified = true;
+                }
+                if (context.ContainsKey("cpulog"))
+                {
+                    cpuLogCommandLineArgSpecified = true;
                 }
             }
             // If the user didn't specify context switches, read the ini setting
@@ -341,6 +346,11 @@ namespace FoenixIDE.UI
                 debugWindow.SetDebugWindowMode(Simulator.Properties.Settings.Default.TranscriptModeDebugger ? CPUWindow.DebugWindowMode.Transcipt : CPUWindow.DebugWindowMode.Default);
                 debugWindow.SetKernel(kernel);
                 debugWindow.Show();
+
+                if (cpuLogCommandLineArgSpecified)
+                {
+                    debugWindow.EnableCpuLog();
+                }
             }
             else
             {

@@ -108,6 +108,9 @@ namespace FoenixIDE
                                 break;
                         }
                         break;
+                    case "--cpulog":
+                        context["cpulog"] = "true";
+                        break;
                     case "--help":
                         DisplayUsage();
                         context["Continue"] = "false";
