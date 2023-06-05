@@ -291,6 +291,9 @@ namespace FoenixIDE.UI
             if (transcript.Count == 0)
                 return;
 
+            if (transcript[0] == null)
+                return; // Transcript can be empty if all opcodes encountered were invalid (e.g., XCE on a 6502)
+
             DrawDebugPanelHeader(e, transcript[0].label, 0);
 
             int lastLineIndex = transcript.Count - 1;
