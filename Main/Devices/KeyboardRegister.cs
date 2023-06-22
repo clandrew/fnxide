@@ -3,7 +3,7 @@ using System;
 
 namespace FoenixIDE.Simulator.Devices
 {
-    public class KeyboardRegister: MemoryLocations.MemoryRAM
+    public class PS2KeyboardRegister : MemoryLocations.MemoryRAM
     {
         // This doesn't currently try to be an accurate implementation of 8042 / SuperIO controller.
         // The real 8042 device makes progress on its inputs on its own timeline separate from CPU.
@@ -22,7 +22,7 @@ namespace FoenixIDE.Simulator.Devices
         public TriggerInterruptDelegate TriggerKeyboardInterrupt;
         public TriggerInterruptDelegate TriggerMouseInterrupt;
 
-        public KeyboardRegister(int StartAddress, int Length) : base(StartAddress, Length)
+        public PS2KeyboardRegister(int StartAddress, int Length) : base(StartAddress, Length)
         {
         }
 

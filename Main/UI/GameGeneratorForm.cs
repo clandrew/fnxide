@@ -15,7 +15,7 @@ namespace FoenixIDE.UI
         TIMER0,
         TIMER1,
         TIMER2,
-        KEYBOARD,
+        PS2KEYBOARD,
         MOUSE
     }
 
@@ -364,9 +364,9 @@ namespace FoenixIDE.UI
                 WriteInterruptHandler(folder + Path.DirectorySeparatorChar + "_timer1_handler.asm", fl, IrqType.TIMER1);
                 WriteInterruptHandler(folder + Path.DirectorySeparatorChar + "_timer2_handler.asm", fl, IrqType.TIMER2);
                 WriteInterruptHandler(folder + Path.DirectorySeparatorChar + "_mouse_handler.asm", fl, IrqType.MOUSE);
-                WriteInterruptHandler(folder + Path.DirectorySeparatorChar + "_keyboard_handler.asm", fl, IrqType.KEYBOARD);
-                WriteInterruptHandler(folder + Path.DirectorySeparatorChar + "_collision0_handler.asm", fl, IrqType.KEYBOARD);
-                WriteInterruptHandler(folder + Path.DirectorySeparatorChar + "_collision1_handler.asm", fl, IrqType.KEYBOARD);
+                WriteInterruptHandler(folder + Path.DirectorySeparatorChar + "_keyboard_handler.asm", fl, IrqType.PS2KEYBOARD);
+                WriteInterruptHandler(folder + Path.DirectorySeparatorChar + "_collision0_handler.asm", fl, IrqType.PS2KEYBOARD);
+                WriteInterruptHandler(folder + Path.DirectorySeparatorChar + "_collision1_handler.asm", fl, IrqType.PS2KEYBOARD);
             }
         }
 

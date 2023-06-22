@@ -34,7 +34,7 @@ namespace FoenixIDE
             CodecRAM codec = null;
             SDCardDevice sdcard = null;
             byte SystemStat = 0; // FMX
-            int keyboardAddress = MemoryMap.KBD_DATA_BUF_FMX; // FMX
+            int ps2KeyboardAddress = MemoryMap.KBD_DATA_BUF_FMX; // FMX
             int clock = 14318000;
             bool is6502 = false;
 
@@ -47,22 +47,22 @@ namespace FoenixIDE
                     break;
                 case BoardVersion.RevU:
                     SystemStat = 1;
-                    keyboardAddress = MemoryMap.KBD_DATA_BUF_U;
+                    ps2KeyboardAddress = MemoryMap.KBD_DATA_BUF_U;
                     break;
                 case BoardVersion.RevUPlus:
                     memSize *= 2;
                     SystemStat = 5;
-                    keyboardAddress = MemoryMap.KBD_DATA_BUF_U;
+                    ps2KeyboardAddress = MemoryMap.KBD_DATA_BUF_U;
                     break;
                 case BoardVersion.RevJr_6502:
                     memSize = 1024*1024;
-                    keyboardAddress = MemoryMap.KBD_DATA_BUF_JR;
+                    ps2KeyboardAddress = MemoryMap.KBD_DATA_BUF_JR;
                     clock = 6293000;
                     is6502 = true;
                     break;
                 case BoardVersion.RevJr_65816:
                     memSize = 1024 * 1024;
-                    keyboardAddress = MemoryMap.KBD_DATA_BUF_JR;
+                    ps2KeyboardAddress = MemoryMap.KBD_DATA_BUF_JR;
                     clock = 6293000;
                     is6502 = false;
                     break;
@@ -96,7 +96,7 @@ namespace FoenixIDE
 
                     // Special devices
                     MATH = new MathCoproRegister(MemoryMap.MATH_START, MemoryMap.MATH_END - MemoryMap.MATH_START + 1), // 48 bytes
-                    KEYBOARD = new KeyboardRegister(keyboardAddress, 5),
+                    PS2KEYBOARD = new PS2KeyboardRegister(ps2KeyboardAddress, 5),
                     SDCARD = sdcard,
                     INTERRUPT = new InterruptController(MemoryMap.INT_PENDING_REG0, 4),
                     UART1 = new UART(MemoryMap.UART1_REGISTERS, 8),
@@ -125,7 +125,7 @@ namespace FoenixIDE
                     RAM = new MemoryRAM(MemoryMap.RAM_START, memSize),
                     // vicky will store 4 pages of data
                     VICKY = new MemoryRAM(0, 4 * 0x2000),
-                    KEYBOARD = new KeyboardRegister(keyboardAddress, 5),
+                    PS2KEYBOARD = new PS2KeyboardRegister(ps2KeyboardAddress, 5),
                     MATH = new MathCoproRegister(MemoryMap.MATH_START_JR, MemoryMap.MATH_END_JR - MemoryMap.MATH_START_JR + 1), // 32 bytes
                     SDCARD = sdcard,
                     INTERRUPT = new InterruptController(MemoryMap.INT_PENDING_REG0_JR, 2),
@@ -513,8 +513,8 @@ namespace FoenixIDE
             CPU.Reset();
 
             // Reset the keyboard
-            MemMgr.KEYBOARD.WriteByte(0, 0);
-            MemMgr.KEYBOARD.WriteByte(4, 0);
+            MemMgr.PS2KEYBOARD.WriteByte(0, 0);
+            MemMgr.PS2KEYBOARD.WriteByte(4, 0);
 
             return true;
         }
