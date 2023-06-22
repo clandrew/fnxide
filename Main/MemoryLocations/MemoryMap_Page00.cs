@@ -160,6 +160,11 @@ namespace FoenixIDE.MemoryLocations
         public const int KEY_BUFFER_WPOS = 0x000F42; // 2 Bytes keyboard buffer write position
         //// public const int KEYBOARD_SC_FLG = 0X000F43; // 1 Bytes that indicate the Status of Left Shift, Left CTRL, Left ALT, Right Shift
         //// public const int KEYBOARD_SC_TMP = 0X000F44; // 1 Byte, Interrupt Save Scan Code while Processing
+        
+        public const int MATRIX_KEYBOARD_VIA_PORT_B = 0xDB00;
+        public const int MATRIX_KEYBOARD_VIA_PORT_A = 0xDB01;
+        public const int MATRIX_KEYBOARD_VIA_DATA_DIRECTION_B = 0xDB02;
+        public const int MATRIX_KEYBOARD_VIA_DATA_DIRECTION_A = 0xDB03;
 
         public const int TEST_BEGIN = 0x001000; // 28672 Bytes Test/diagnostic code for prototype.
         public const int TEST_END = 0x007FFF; // 0 Byte 

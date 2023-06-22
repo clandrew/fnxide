@@ -283,7 +283,7 @@ namespace FoenixIDE.UI
             }
             kernel.MemMgr.SDCARD.sdCardIRQMethod += SDCardInterrupt;
             kernel.MemMgr.PS2KEYBOARD.TriggerMouseInterrupt += TriggerMouseInterrupt;
-            kernel.MemMgr.PS2KEYBOARD.TriggerKeyboardInterrupt += TriggerKeyboardInterrupt;
+            kernel.MemMgr.PS2KEYBOARD.TriggerKeyboardInterrupt += TriggerPS2KeyboardInterrupt;
 
             kernel.ResCheckerRef = ResChecker;
 
@@ -632,11 +632,22 @@ namespace FoenixIDE.UI
                     kernel.MemMgr.PS2KEYBOARD.WriteByte(0, (byte)sc);
                     kernel.MemMgr.PS2KEYBOARD.WriteByte(4, 0);
 
-                    TriggerKeyboardInterrupt();
+                    TriggerPS2KeyboardInterrupt();
                 }
             }
             else
             {
+                // Notify the matrix keyboard
+                if (sc == ScanCode.sc_space)
+                {
+                    kernel.MemMgr.MATRIXKEYBOARD.SpacePressed = true;
+                }
+                else if (sc == ScanCode.sc_space + 0x80)
+                {
+                    kernel.MemMgr.MATRIXKEYBOARD.SpacePressed = false;
+                }
+
+                // Notify the PS2 keyboard
                 // Check if the Keyboard interrupt is allowed
                 byte mask = kernel.MemMgr.VICKY.ReadByte(MemoryMap.INT_MASK_REG0_JR - 0xC000);
                 if ((~mask & (byte)Register0_JR.JR0_INT02_KBD) != 0)
@@ -644,11 +655,11 @@ namespace FoenixIDE.UI
                     kernel.MemMgr.PS2KEYBOARD.WriteByte(0, (byte)sc);
                     kernel.MemMgr.PS2KEYBOARD.WriteByte(4, 0);
 
-                    TriggerKeyboardInterrupt();
+                    TriggerPS2KeyboardInterrupt();
                 }
             }
         }
-        private void TriggerKeyboardInterrupt()
+        private void TriggerPS2KeyboardInterrupt()
         {
             if (!BoardVersionHelpers.IsJr(version))
             {
