@@ -126,6 +126,7 @@ namespace FoenixIDE
                     // vicky will store 4 pages of data
                     VICKY = new MemoryRAM(0, 4 * 0x2000),
                     PS2KEYBOARD = new PS2KeyboardRegister(ps2KeyboardAddress, 5),
+                    MATRIXKEYBOARD = new MatrixKeyboardRegister(),
                     MATH = new MathCoproRegister(MemoryMap.MATH_START_JR, MemoryMap.MATH_END_JR - MemoryMap.MATH_START_JR + 1), // 32 bytes
                     SDCARD = sdcard,
                     INTERRUPT = new InterruptController(MemoryMap.INT_PENDING_REG0_JR, 2),

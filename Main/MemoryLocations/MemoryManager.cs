@@ -30,6 +30,7 @@ namespace FoenixIDE.MemoryLocations
         public MathFloatRegister FLOAT = null;
         public CodecRAM CODEC = null;
         public PS2KeyboardRegister PS2KEYBOARD = null;
+        public MatrixKeyboardRegister MATRIXKEYBOARD = null;
         public SDCardDevice SDCARD = null;
         public InterruptController INTERRUPT = null;
         public UART UART1 = null;
