@@ -336,21 +336,25 @@ namespace FoenixIDE
             {
                 BasePageAddress = 0x38_0000;
             }
-
             FileInfo info = new FileInfo(LoadedKernel);
-            if (!info.Exists)
+            while (!info.Exists)
             {
                 OpenFileDialog f = new OpenFileDialog
                 {
                     Title = "Select a kernel file",
-                    Filter = "Hex Files|*.hex|PGX Files|*.pgx|PGZ Files|*.pgz"
+                    Filter = "Hex Files|*.hex|PGX Files|*.pgx|PGZ Files|*.pgz|Binary Files|*.bin"
                 };
                 if (f.ShowDialog() == DialogResult.OK)
                 {
                     LoadedKernel = f.FileName;
                     info = new FileInfo(LoadedKernel);
                 }
-            }
+                else
+                {
+                    return false;
+                }
+            } 
+            
             string extension = info.Extension.ToUpper();
             if (info.Name.StartsWith("kernel"))
             {
