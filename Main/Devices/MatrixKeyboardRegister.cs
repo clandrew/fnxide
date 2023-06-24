@@ -30,133 +30,255 @@ namespace FoenixIDE.Simulator.Devices
                 matrix = m;
             }
 
+            public void WriteByteSideEffect_StandardDirection(byte Value)
+            {
+                if (Value == (1 << 0 ^ 0xFF)) // PA0
+                {
+                    VIA1_PRB = 0;
+                    VIA1_PRB |= (1 << 0); // delete key, unmapped
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_enter] ? (byte)0 : (byte)(1 << 1);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_left_arrow] ? (byte)0 : (byte)(1 << 2);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_F7] ? (byte)0 : (byte)(1 << 3);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_F1] ? (byte)0 : (byte)(1 << 4);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_F3] ? (byte)0 : (byte)(1 << 5);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_F5] ? (byte)0 : (byte)(1 << 6);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_up_arrow] ? (byte)0 : (byte)(1 << 7);
+
+                    // Also set VIA0
+                    matrix.VIA0.VIA0_PRB = 0;
+                    matrix.VIA0.VIA0_PRB |= (1 << 0);
+                    matrix.VIA0.VIA0_PRB |= (1 << 1);
+                    matrix.VIA0.VIA0_PRB |= (1 << 2);
+                    matrix.VIA0.VIA0_PRB |= (1 << 3);
+                    matrix.VIA0.VIA0_PRB |= (1 << 4);
+                    matrix.VIA0.VIA0_PRB |= (1 << 5);
+                    matrix.VIA0.VIA0_PRB |= (1 << 6);
+                    matrix.VIA0.VIA0_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_down_arrow] ? (byte)0 : (byte)(1 << 7);
+                }
+                else if (Value == (1 << 1 ^ 0xFF)) // PA1
+                {
+                    VIA1_PRB = 0;
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_3] ? (byte)0 : (byte)(1 << 0);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_w] ? (byte)0 : (byte)(1 << 1);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_a] ? (byte)0 : (byte)(1 << 2);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_4] ? (byte)0 : (byte)(1 << 3);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_z] ? (byte)0 : (byte)(1 << 4);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_s] ? (byte)0 : (byte)(1 << 5);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_e] ? (byte)0 : (byte)(1 << 6);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_shiftLeft] ? (byte)0 : (byte)(1 << 7);
+                }
+                else if (Value == (1 << 2 ^ 0xFF)) // PA2
+                {
+                    VIA1_PRB = 0;
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_5] ? (byte)0 : (byte)(1 << 0);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_r] ? (byte)0 : (byte)(1 << 1);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_d] ? (byte)0 : (byte)(1 << 2);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_6] ? (byte)0 : (byte)(1 << 3);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_c] ? (byte)0 : (byte)(1 << 4);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_f] ? (byte)0 : (byte)(1 << 5);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_t] ? (byte)0 : (byte)(1 << 6);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_x] ? (byte)0 : (byte)(1 << 7);
+                }
+                else if (Value == (1 << 3 ^ 0xFF)) // PA3
+                {
+                    VIA1_PRB = 0;
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_7] ? (byte)0 : (byte)(1 << 0);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_y] ? (byte)0 : (byte)(1 << 1);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_g] ? (byte)0 : (byte)(1 << 2);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_8] ? (byte)0 : (byte)(1 << 3);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_b] ? (byte)0 : (byte)(1 << 4);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_h] ? (byte)0 : (byte)(1 << 5);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_u] ? (byte)0 : (byte)(1 << 6);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_v] ? (byte)0 : (byte)(1 << 7);
+                }
+                else if (Value == (1 << 4 ^ 0xFF)) // PA4
+                {
+                    VIA1_PRB = 0;
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_9] ? (byte)0 : (byte)(1 << 0);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_i] ? (byte)0 : (byte)(1 << 1);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_j] ? (byte)0 : (byte)(1 << 2);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_0] ? (byte)0 : (byte)(1 << 3);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_m] ? (byte)0 : (byte)(1 << 4);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_k] ? (byte)0 : (byte)(1 << 5);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_o] ? (byte)0 : (byte)(1 << 6);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_n] ? (byte)0 : (byte)(1 << 7);
+                }
+                else if (Value == (1 << 5 ^ 0xFF)) // PA5
+                {
+                    VIA1_PRB = 0;
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_minus] ? (byte)0 : (byte)(1 << 0);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_p] ? (byte)0 : (byte)(1 << 1);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_l] ? (byte)0 : (byte)(1 << 2);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_capslock] ? (byte)0 : (byte)(1 << 3);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_period] ? (byte)0 : (byte)(1 << 4);
+                    VIA1_PRB |= (byte)(1 << 5); // Semicolon is not differentiated
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_bracketLeft] ? (byte)0 : (byte)(1 << 6);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_comma] ? (byte)0 : (byte)(1 << 7);
+                }
+                else if (Value == (1 << 6 ^ 0xFF)) // PA6
+                {
+                    VIA1_PRB = 0;
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_equals] ? (byte)0 : (byte)(1 << 0);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_bracketRight] ? (byte)0 : (byte)(1 << 1);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_semicolon] ? (byte)0 : (byte)(1 << 2);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_backslash] ? (byte)0 : (byte)(1 << 3); // A backslash\ is mapped to the HOME key
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_shiftRight] ? (byte)0 : (byte)(1 << 4);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_altLeft] ? (byte)0 : (byte)(1 << 5);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_tab] ? (byte)0 : (byte)(1 << 6);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_slash] ? (byte)0 : (byte)(1 << 7);
+
+                    matrix.VIA0.VIA0_PRB = 0;
+                    matrix.VIA0.VIA0_PRB |= (1 << 0);
+                    matrix.VIA0.VIA0_PRB |= (1 << 1);
+                    matrix.VIA0.VIA0_PRB |= (1 << 2);
+                    matrix.VIA0.VIA0_PRB |= (1 << 3);
+                    matrix.VIA0.VIA0_PRB |= (1 << 4);
+                    matrix.VIA0.VIA0_PRB |= (1 << 5);
+                    matrix.VIA0.VIA0_PRB |= (1 << 6);
+                    matrix.VIA0.VIA0_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_right_arrow] ? (byte)0 : (byte)(1 << 7);
+                }
+                else if (Value == (1 << 7 ^ 0xFF)) // PA7
+                {
+                    VIA1_PRB = 0;
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_1] ? (byte)0 : (byte)(1 << 0);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_backspace] ? (byte)0 : (byte)(1 << 1);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_controlLeft] ? (byte)0 : (byte)(1 << 2);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_2] ? (byte)0 : (byte)(1 << 3);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_space] ? (byte)0 : (byte)(1 << 4);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_grave] ? (byte)0 : (byte)(1 << 5); // A backtick` is mapped to the Foenix key
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_q] ? (byte)0 : (byte)(1 << 6);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_escape] ? (byte)0 : (byte)(1 << 7); // Escape is mapped to RUN/STOP
+                }
+                else
+                {
+                    VIA1_PRB = 0xFF;
+                }
+            }
+
+            public void WriteByteSideEffect_ReverseDirection(byte Value)
+            {
+                // I noticed VIA0 isn't accessible when using the reverse direction on HW, so it is not updated here.
+
+                if (Value == (1 << 0 ^ 0xFF)) // PB0
+                {
+                    VIA1_PRA = 0;
+                    VIA1_PRA |= (1 << 0); // delete key, unmapped
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_3] ? (byte)0 : (byte)(1 << 1);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_5] ? (byte)0 : (byte)(1 << 2);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_7] ? (byte)0 : (byte)(1 << 3);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_9] ? (byte)0 : (byte)(1 << 4);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_minus] ? (byte)0 : (byte)(1 << 5);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_equals] ? (byte)0 : (byte)(1 << 6);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_1] ? (byte)0 : (byte)(1 << 7);
+                }
+                else if (Value == (1 << 1 ^ 0xFF)) // PB1
+                {
+                    VIA1_PRA = 0;
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_enter] ? (byte)0 : (byte)(1 << 0);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_w] ? (byte)0 : (byte)(1 << 1);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_r] ? (byte)0 : (byte)(1 << 2);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_y] ? (byte)0 : (byte)(1 << 3);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_i] ? (byte)0 : (byte)(1 << 4);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_p] ? (byte)0 : (byte)(1 << 5);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_bracketRight] ? (byte)0 : (byte)(1 << 6);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_backspace] ? (byte)0 : (byte)(1 << 7);
+                }
+                else if (Value == (1 << 2 ^ 0xFF)) // PB2
+                {
+                    VIA1_PRA = 0;
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_left_arrow] ? (byte)0 : (byte)(1 << 0);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_a] ? (byte)0 : (byte)(1 << 1);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_d] ? (byte)0 : (byte)(1 << 2);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_g] ? (byte)0 : (byte)(1 << 3);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_j] ? (byte)0 : (byte)(1 << 4);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_l] ? (byte)0 : (byte)(1 << 5);
+                    VIA1_PRA |= (byte)(1 << 6); // Semicolon is not differentiated
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_controlLeft] ? (byte)0 : (byte)(1 << 7);
+                }
+                else if (Value == (1 << 3 ^ 0xFF)) // PB3
+                {
+                    VIA1_PRA = 0;
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_F7] ? (byte)0 : (byte)(1 << 0);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_4] ? (byte)0 : (byte)(1 << 1);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_6] ? (byte)0 : (byte)(1 << 2);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_8] ? (byte)0 : (byte)(1 << 3);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_0] ? (byte)0 : (byte)(1 << 4);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_capslock] ? (byte)0 : (byte)(1 << 5);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_backslash] ? (byte)0 : (byte)(1 << 6);  // A backslash\ is mapped to the HOME key
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_2] ? (byte)0 : (byte)(1 << 7);
+                }
+                else if (Value == (1 << 4 ^ 0xFF)) // PB4
+                {
+                    VIA1_PRA = 0;
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_F1] ? (byte)0 : (byte)(1 << 0);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_z] ? (byte)0 : (byte)(1 << 1);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_c] ? (byte)0 : (byte)(1 << 2);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_b] ? (byte)0 : (byte)(1 << 3);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_m] ? (byte)0 : (byte)(1 << 4);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_period] ? (byte)0 : (byte)(1 << 5);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_shiftRight] ? (byte)0 : (byte)(1 << 6);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_space] ? (byte)0 : (byte)(1 << 7);
+                }
+                else if (Value == (1 << 5 ^ 0xFF)) // PB5
+                {
+                    VIA1_PRA = 0;
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_F3] ? (byte)0 : (byte)(1 << 0);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_s] ? (byte)0 : (byte)(1 << 1);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_f] ? (byte)0 : (byte)(1 << 2);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_h] ? (byte)0 : (byte)(1 << 3);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_k] ? (byte)0 : (byte)(1 << 4);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_semicolon] ? (byte)0 : (byte)(1 << 5);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_altLeft] ? (byte)0 : (byte)(1 << 6);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_grave] ? (byte)0 : (byte)(1 << 7); // A backtick` is mapped to the Foenix key
+                }
+                else if (Value == (1 << 6 ^ 0xFF)) // PB6
+                {
+                    VIA1_PRA = 0;
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_F5] ? (byte)0 : (byte)(1 << 0);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_e] ? (byte)0 : (byte)(1 << 1);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_t] ? (byte)0 : (byte)(1 << 2);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_u] ? (byte)0 : (byte)(1 << 3);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_o] ? (byte)0 : (byte)(1 << 4);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_bracketLeft] ? (byte)0 : (byte)(1 << 5);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_tab] ? (byte)0 : (byte)(1 << 6);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_q] ? (byte)0 : (byte)(1 << 7);
+                }
+                else if (Value == (1 << 7 ^ 0xFF)) // PB7
+                {
+                    VIA1_PRA = 0;
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_up_arrow] ? (byte)0 : (byte)(1 << 0);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_shiftLeft] ? (byte)0 : (byte)(1 << 1);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_x] ? (byte)0 : (byte)(1 << 2);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_v] ? (byte)0 : (byte)(1 << 3);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_n] ? (byte)0 : (byte)(1 << 4);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_comma] ? (byte)0 : (byte)(1 << 5);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_slash] ? (byte)0 : (byte)(1 << 6);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_escape] ? (byte)0 : (byte)(1 << 7);  // Escape is mapped to RUN/STOP
+                }
+                else
+                {
+                    VIA1_PRB = 0xFF;
+                }
+            }
+
             public override void WriteByte(int Address, byte Value)
             {
-                data[Address] = Value;
+                data[Address] = Value;                
 
-                // Handle side effects
-                if (Address == 1) // Write to port A.
+                // Handle side effects below.
+                // 
+                if (VIA1_DDRA == 0xFF && VIA1_DDRB == 0x00) // Write A, Read B- the standard direction
                 {
-                    if (Value == (1 << 0 ^ 0xFF)) // PA0
+                    if (Address == 1) // Write to port A.
                     {
-                        VIA1_PRB = 0;
-                        VIA1_PRB |= (1 << 0); // delete key, unmapped
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_enter] ? (byte)0 : (byte)(1 << 1);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_left_arrow] ? (byte)0 : (byte)(1 << 2);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_F7] ? (byte)0 : (byte)(1 << 3);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_F1] ? (byte)0 : (byte)(1 << 4);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_F3] ? (byte)0 : (byte)(1 << 5);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_F5] ? (byte)0 : (byte)(1 << 6);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_up_arrow] ? (byte)0 : (byte)(1 << 7);
-
-                        // Also set VIA0
-                        matrix.VIA0.VIA0_PRB = 0;
-                        matrix.VIA0.VIA0_PRB |= (1 << 0);
-                        matrix.VIA0.VIA0_PRB |= (1 << 1);
-                        matrix.VIA0.VIA0_PRB |= (1 << 2);
-                        matrix.VIA0.VIA0_PRB |= (1 << 3);
-                        matrix.VIA0.VIA0_PRB |= (1 << 4);
-                        matrix.VIA0.VIA0_PRB |= (1 << 5);
-                        matrix.VIA0.VIA0_PRB |= (1 << 6);
-                        matrix.VIA0.VIA0_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_down_arrow]? (byte)0 : (byte)(1 << 7);
+                        WriteByteSideEffect_StandardDirection(Value);
                     }
-                    else if (Value == (1 << 1 ^ 0xFF)) // PA1
+                }                
+                else if (VIA1_DDRA == 0 && VIA1_DDRB == 0xFF) // Write B, Read A- the reverse direction
+                {
+                    if (Address == 0) // Write to port B.
                     {
-                        VIA1_PRB = 0;
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_3] ? (byte)0 : (byte)(1 << 0);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_w] ? (byte)0 : (byte)(1 << 1);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_a] ? (byte)0 : (byte)(1 << 2);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_4] ? (byte)0 : (byte)(1 << 3);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_z] ? (byte)0 : (byte)(1 << 4);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_s] ? (byte)0 : (byte)(1 << 5);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_e] ? (byte)0 : (byte)(1 << 6);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_shiftLeft] ? (byte)0 : (byte)(1 << 7);
-                    }
-                    else if (Value == (1 << 2 ^ 0xFF)) // PA2
-                    {
-                        VIA1_PRB = 0;
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_5] ? (byte)0 : (byte)(1 << 0);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_r] ? (byte)0 : (byte)(1 << 1);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_d] ? (byte)0 : (byte)(1 << 2);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_6] ? (byte)0 : (byte)(1 << 3);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_c] ? (byte)0 : (byte)(1 << 4);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_f] ? (byte)0 : (byte)(1 << 5);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_t] ? (byte)0 : (byte)(1 << 6);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_x] ? (byte)0 : (byte)(1 << 7);
-                    }
-                    else if (Value == (1 << 3 ^ 0xFF)) // PA3
-                    {
-                        VIA1_PRB = 0;
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_7] ? (byte)0 : (byte)(1 << 0);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_y] ? (byte)0 : (byte)(1 << 1);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_g] ? (byte)0 : (byte)(1 << 2);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_8] ? (byte)0 : (byte)(1 << 3);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_b] ? (byte)0 : (byte)(1 << 4);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_h] ? (byte)0 : (byte)(1 << 5);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_u] ? (byte)0 : (byte)(1 << 6);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_v] ? (byte)0 : (byte)(1 << 7);
-                    }
-                    else if (Value == (1 << 4 ^ 0xFF)) // PA4
-                    {
-                        VIA1_PRB = 0;
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_9] ? (byte)0 : (byte)(1 << 0);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_i] ? (byte)0 : (byte)(1 << 1);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_j] ? (byte)0 : (byte)(1 << 2);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_0] ? (byte)0 : (byte)(1 << 3);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_m] ? (byte)0 : (byte)(1 << 4);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_k] ? (byte)0 : (byte)(1 << 5);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_o] ? (byte)0 : (byte)(1 << 6);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_n] ? (byte)0 : (byte)(1 << 7);
-                    }
-                    else if (Value == (1 << 5 ^ 0xFF)) // PA5
-                    {
-                        VIA1_PRB = 0;
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_minus] ? (byte)0 : (byte)(1 << 0);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_p] ? (byte)0 : (byte)(1 << 1);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_l] ? (byte)0 : (byte)(1 << 2);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_capslock] ? (byte)0 : (byte)(1 << 3);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_period] ? (byte)0 : (byte)(1 << 4);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_semicolon] ? (byte)0 : (byte)(1 << 5);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_bracketLeft] ? (byte)0 : (byte)(1 << 6);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_comma] ? (byte)0 : (byte)(1 << 7);
-                    }
-                    else if (Value == (1 << 6 ^ 0xFF)) // PA6
-                    {
-                        VIA1_PRB = 0;
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_equals] ? (byte)0 : (byte)(1 << 0);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_bracketRight] ? (byte)0 : (byte)(1 << 1);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_semicolon] ? (byte)0 : (byte)(1 << 2);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_backslash] ? (byte)0 : (byte)(1 << 3); // A backslash\ is mapped to the HOME key
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_shiftRight] ? (byte)0 : (byte)(1 << 4);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_altLeft] ? (byte)0 : (byte)(1 << 5);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_tab] ? (byte)0 : (byte)(1 << 6);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_slash] ? (byte)0 : (byte)(1 << 7);
-
-                        matrix.VIA0.VIA0_PRB = 0;
-                        matrix.VIA0.VIA0_PRB |= (1 << 0);
-                        matrix.VIA0.VIA0_PRB |= (1 << 1);
-                        matrix.VIA0.VIA0_PRB |= (1 << 2);
-                        matrix.VIA0.VIA0_PRB |= (1 << 3);
-                        matrix.VIA0.VIA0_PRB |= (1 << 4);
-                        matrix.VIA0.VIA0_PRB |= (1 << 5);
-                        matrix.VIA0.VIA0_PRB |= (1 << 6);
-                        matrix.VIA0.VIA0_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_right_arrow] ? (byte)0 : (byte)(1 << 7);
-                    }
-                    else if (Value == (1 << 7 ^ 0xFF)) // PA7
-                    {
-                        VIA1_PRB = 0;
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_1] ? (byte)0 : (byte)(1 << 0);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_backspace] ? (byte)0 : (byte)(1 << 1);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_controlLeft] ? (byte)0 : (byte)(1 << 2);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_2] ? (byte)0 : (byte)(1 << 3);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_space] ? (byte)0 : (byte)(1 << 4);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_grave] ? (byte)0 : (byte)(1 << 5); // A backtick` is mapped to the Foenix key
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_q] ? (byte)0 : (byte)(1 << 6);
-                        VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_escape] ? (byte)0 : (byte)(1 << 7); // Escape is mapped to RUN/STOP
-                    }
-                    else
-                    {
-                        VIA1_PRB = 0xFF;
+                        WriteByteSideEffect_ReverseDirection(Value);
                     }
                 }
             }
