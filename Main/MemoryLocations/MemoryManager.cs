@@ -129,7 +129,7 @@ namespace FoenixIDE.MemoryLocations
                     DeviceAddress = Address - PS2KEYBOARD.StartAddress;
                     return;
                 }
-                if (Address >= MATRIXKEYBOARD.StartAddress && Address <= MATRIXKEYBOARD.EndAddress)
+                if (MATRIXKEYBOARD != null && Address >= MATRIXKEYBOARD.StartAddress && Address <= MATRIXKEYBOARD.EndAddress)
                 {
                     Device = MATRIXKEYBOARD;
                     DeviceAddress = Address - MATRIXKEYBOARD.StartAddress;
@@ -260,7 +260,7 @@ namespace FoenixIDE.MemoryLocations
                         DeviceAddress = Address - PS2KEYBOARD.StartAddress;
                         return;
                     }
-                    if (Address >= MATRIXKEYBOARD.StartAddress && Address <= MATRIXKEYBOARD.EndAddress)
+                    if (MATRIXKEYBOARD != null && Address >= MATRIXKEYBOARD.StartAddress && Address <= MATRIXKEYBOARD.EndAddress)
                     {
                         Device = MATRIXKEYBOARD;
                         DeviceAddress = Address - MATRIXKEYBOARD.StartAddress;
