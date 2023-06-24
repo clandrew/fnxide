@@ -634,14 +634,7 @@ namespace FoenixIDE.UI
             else
             {
                 // Notify the matrix keyboard
-                if (sc == ScanCode.sc_space)
-                {
-                    kernel.MemMgr.MATRIXKEYBOARD.SpacePressed = true;
-                }
-                else if (sc == ScanCode.sc_space + 0x80)
-                {
-                    kernel.MemMgr.MATRIXKEYBOARD.SpacePressed = false;
-                }
+                kernel.MemMgr.MATRIXKEYBOARD.WriteScanCode(sc);
 
                 // Notify the PS2 keyboard
                 // Check if the Keyboard interrupt is allowed
