@@ -6,21 +6,6 @@ using System.Threading.Tasks;
 
 namespace FoenixIDE.Simulator.Devices
 {
-    /*
-     * 
-VIA_PRA  =  $db01  ; CIA#1 (Port Register A)
-VIA_DDRA =  $db03  ; CIA#1 (Data Direction Register A)
-
-VIA_PRB  =  $db00  ; CIA#1 (Port Register B)
-VIA_DDRB =  $db02  ; CIA#1 (Data Direction Register B)
-
-
-        public const int MATRIX_KEYBOARD_VIA_PORT_B = 0xDB00;
-        public const int MATRIX_KEYBOARD_VIA_PORT_A = 0xDB01;
-        public const int MATRIX_KEYBOARD_VIA_DATA_DIRECTION_B = 0xDB02;
-        public const int MATRIX_KEYBOARD_VIA_DATA_DIRECTION_A = 0xDB03;
-     */
-
     public class MatrixKeyboardRegister : MemoryLocations.MemoryRAM
     {
         public MatrixKeyboardRegister(int StartAddress, int Length) : base(StartAddress, Length)
@@ -30,26 +15,56 @@ VIA_DDRB =  $db02  ; CIA#1 (Data Direction Register B)
 
         public override void WriteByte(int Address, byte Value)
         {
-            data[Address] = Value;
+            if (Address == 0) // Writing to port register B affects the value next read from port register A.
+            {
+                if ((Value & (1 << 4 ^ 0xFF)) != 0) // If we're asked to clear the corresponding bit
+                {
+                    bool isPortBWriteAllowed = (DDRB & (1 << 4)) != 0; 
+                    if (isPortBWriteAllowed)
+                    {
+                        PRB &= 1 << 4 ^ 0xFF; // Clear corresponding reg bit
+
+                        // Handle side-effects of write
+                        byte maskA = 1 << 7;
+
+                        // Set bits 0 through 6 of A by default
+                        PRA |= 0x7F;
+
+                        if (SpacePressed)
+                        {
+                            PRA &= (byte)(maskA ^ 0xFF); // Clear the corresponding bit of A
+                        }
+                        else
+                        {
+                            PRA |= maskA; // Set the corresponding bit of A
+                        }
+                    }
+                }
+            }
+            else
+            {
+                data[Address] = Value;
+            }
         }
         public override byte ReadByte(int Address)
         {
-            if (Address == 1) // Port register A
+            if (Address == 1) // Port A
             {
-                byte pb = data[0]; // Port register B
-                byte ddrb = data[2];
-                byte ddra = data[3];
-
-                if (pb == (1 << 4 ^ 0xFF) &&
-                    ddrb == 0xFF &&
-                    ddra == 0x0 &&
-                    SpacePressed)
+                bool canReadPortA = DDRA == 0;
+                if (!canReadPortA)
                 {
-                    return (1 << 7) ^ 0xFF;
+                    return 0;
                 }
             }
+
             return data[Address];
         }
+
+        byte PRA { get { return data[1]; } set { data[1] = value; } }
+        byte PRB { get { return data[0]; } set { data[0] = value; } }
+
+        byte DDRA { get { return data[3]; } set { data[3] = value; } }
+        byte DDRB { get { return data[2]; } set { data[2] = value; } }
 
         public bool SpacePressed;
     }
