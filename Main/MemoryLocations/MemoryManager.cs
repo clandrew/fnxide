@@ -129,11 +129,20 @@ namespace FoenixIDE.MemoryLocations
                     DeviceAddress = Address - PS2KEYBOARD.StartAddress;
                     return;
                 }
-                if (MATRIXKEYBOARD != null && Address >= MATRIXKEYBOARD.StartAddress && Address <= MATRIXKEYBOARD.EndAddress)
+                if (MATRIXKEYBOARD != null)
                 {
-                    Device = MATRIXKEYBOARD;
-                    DeviceAddress = Address - MATRIXKEYBOARD.StartAddress;
-                    return;
+                    if (Address >= MATRIXKEYBOARD.VIA0.StartAddress && Address <= MATRIXKEYBOARD.VIA0.EndAddress)
+                    {
+                        Device = MATRIXKEYBOARD.VIA0;
+                        DeviceAddress = Address - MATRIXKEYBOARD.VIA0.StartAddress;
+                        return;
+                    }
+                    if (Address >= MATRIXKEYBOARD.VIA1.StartAddress && Address <= MATRIXKEYBOARD.VIA1.EndAddress)
+                    {
+                        Device = MATRIXKEYBOARD.VIA1;
+                        DeviceAddress = Address - MATRIXKEYBOARD.VIA1.StartAddress;
+                        return;
+                    }
                 }
                 if (Address >= UART1.StartAddress && Address <= UART1.EndAddress)
                 {
@@ -260,11 +269,20 @@ namespace FoenixIDE.MemoryLocations
                         DeviceAddress = Address - PS2KEYBOARD.StartAddress;
                         return;
                     }
-                    if (MATRIXKEYBOARD != null && Address >= MATRIXKEYBOARD.StartAddress && Address <= MATRIXKEYBOARD.EndAddress)
+                    if (MATRIXKEYBOARD != null)
                     {
-                        Device = MATRIXKEYBOARD;
-                        DeviceAddress = Address - MATRIXKEYBOARD.StartAddress;
-                        return;
+                        if (Address >= MATRIXKEYBOARD.VIA0.StartAddress && Address <= MATRIXKEYBOARD.VIA0.EndAddress)
+                        {
+                            Device = MATRIXKEYBOARD.VIA0;
+                            DeviceAddress = Address - MATRIXKEYBOARD.VIA0.StartAddress;
+                            return;
+                        }
+                        if (Address >= MATRIXKEYBOARD.VIA1.StartAddress && Address <= MATRIXKEYBOARD.VIA1.EndAddress)
+                        {
+                            Device = MATRIXKEYBOARD.VIA1;
+                            DeviceAddress = Address - MATRIXKEYBOARD.VIA1.StartAddress;
+                            return;
+                        }
                     }
                     if (Address >= UART1.StartAddress && Address <= UART1.EndAddress)
                     {

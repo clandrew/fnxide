@@ -126,7 +126,7 @@ namespace FoenixIDE
                     // vicky will store 4 pages of data
                     VICKY = new MemoryRAM(0, 4 * 0x2000),
                     PS2KEYBOARD = new PS2KeyboardRegister(ps2KeyboardAddress, 5),
-                    MATRIXKEYBOARD = new MatrixKeyboardRegister(MemoryMap.MATRIX_KEYBOARD_VIA_PORT_B, 4),
+                    MATRIXKEYBOARD = new MatrixKeyboardRegister(MemoryMap.MATRIX_KEYBOARD_VIA0_PORT_B, 4, MemoryMap.MATRIX_KEYBOARD_VIA1_PORT_B, 4),
                     MATH = new MathCoproRegister(MemoryMap.MATH_START_JR, MemoryMap.MATH_END_JR - MemoryMap.MATH_START_JR + 1), // 32 bytes
                     SDCARD = sdcard,
                     INTERRUPT = new InterruptController(MemoryMap.INT_PENDING_REG0_JR, 2),
@@ -519,10 +519,15 @@ namespace FoenixIDE
 
             if (MemMgr.MATRIXKEYBOARD != null)
             {
-                MemMgr.MATRIXKEYBOARD.WriteByte(0, 0);
-                MemMgr.MATRIXKEYBOARD.WriteByte(1, 0);
-                MemMgr.MATRIXKEYBOARD.WriteByte(2, 0);
-                MemMgr.MATRIXKEYBOARD.WriteByte(3, 0);
+                MemMgr.MATRIXKEYBOARD.VIA0.WriteByte(0, 0);
+                MemMgr.MATRIXKEYBOARD.VIA0.WriteByte(1, 0);
+                MemMgr.MATRIXKEYBOARD.VIA0.WriteByte(2, 0);
+                MemMgr.MATRIXKEYBOARD.VIA0.WriteByte(3, 0);
+
+                MemMgr.MATRIXKEYBOARD.VIA1.WriteByte(0, 0);
+                MemMgr.MATRIXKEYBOARD.VIA1.WriteByte(1, 0);
+                MemMgr.MATRIXKEYBOARD.VIA1.WriteByte(2, 0);
+                MemMgr.MATRIXKEYBOARD.VIA1.WriteByte(3, 0);
             }
 
             return true;
