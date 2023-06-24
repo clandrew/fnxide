@@ -101,12 +101,10 @@ namespace FoenixIDE.UI
                     {
                         version = BoardVersion.RevJr_6502;
                     }
-#if DEBUG
                     else if (context["version"] == "RevJr816")
                     {
                         version = BoardVersion.RevJr_65816;
                     }
-#endif
                     boardVersionCommandLineSpecified = true;
                 }
                 if (context.ContainsKey("cpulog"))
@@ -138,11 +136,9 @@ namespace FoenixIDE.UI
                     case "Jr":
                         version = BoardVersion.RevJr_6502;
                         break;
-#if DEBUG
                     case "Jr816":
                         version = BoardVersion.RevJr_65816;
                         break;
-#endif
                 }
             }
             if (defaultKernel == null)
@@ -1469,13 +1465,8 @@ namespace FoenixIDE.UI
             }
             else if (version == BoardVersion.RevJr_6502)
             {
-#if DEBUG
                 version = BoardVersion.RevJr_65816;
                 defaultKernel = @"roms\\kernel_F256Jr.hex";
-#else
-                version = BoardVersion.RevC;
-                defaultKernel = @"roms\\kernel_FMX.hex";
-#endif
             }
             else
             {
