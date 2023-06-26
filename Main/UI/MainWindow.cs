@@ -99,6 +99,7 @@ namespace FoenixIDE.UI
                     }
                     else if (context["version"] == "RevJr")
                     {
+                        // Keep back-compatibility with existing command line options.
                         version = BoardVersion.RevJr_6502;
                     }
                     else if (context["version"] == "RevJr816")
@@ -158,7 +159,7 @@ namespace FoenixIDE.UI
                         defaultKernel = @"roms\\kernel_U_Plus.hex";
                         break;
                     case BoardVersion.RevJr_6502:
-                    case BoardVersion.RevJr_65816:// Both SKUs share the same kernelfile
+                    case BoardVersion.RevJr_65816: // Both SKUs share the same kernelfile
                         defaultKernel = @"roms\\kernel_F256Jr.hex";
                         break;
                 }
@@ -505,7 +506,7 @@ namespace FoenixIDE.UI
                 byte IRQ0 = kernel.MemMgr.ReadByte(MemoryLocations.MemoryMap.INT_PENDING_REG0);
                 if (BoardVersionHelpers.IsJr(version))
                 {
-                    IRQ0 = kernel.MemMgr.ReadByte(MemoryLocations.MemoryMap.INT_PENDING_REG0_JR);
+                    IRQ0 = kernel.MemMgr.ReadByte(MemoryLocations.MemoryMap.INT_PENDING_REG0_JR - 0xC000);
                 }
                 IRQ0 |= (byte)Register0.FNX0_INT01_SOL;
                 kernel.MemMgr.INTERRUPT.WriteFromGabe(0, IRQ0);
@@ -766,45 +767,12 @@ namespace FoenixIDE.UI
                 {
                     Write_CPS_FPS_Safe("CPS: Stopped", "FPS: N/A");
                 }
-                WriteRTCTime(currentTime);
             }
             else
             {
                 cpsPerf.Text = "CPS: 0";
                 fpsPerf.Text = "FPS: 0";
             }
-        }
-
-        private void WriteRTCTime(DateTime currentTime)
-        {
-            if (!BoardVersionHelpers.IsJr(version))
-            {
-                // write the time to memory - values are BCD
-                kernel.MemMgr.VICKY.WriteByte(MemoryLocations.MemoryMap.RTC_SEC - kernel.MemMgr.VICKY.StartAddress, BCD(currentTime.Second));
-                kernel.MemMgr.VICKY.WriteByte(MemoryLocations.MemoryMap.RTC_MIN - kernel.MemMgr.VICKY.StartAddress, BCD(currentTime.Minute));
-                kernel.MemMgr.VICKY.WriteByte(MemoryLocations.MemoryMap.RTC_HRS - kernel.MemMgr.VICKY.StartAddress, BCD(currentTime.Hour));
-                kernel.MemMgr.VICKY.WriteByte(MemoryLocations.MemoryMap.RTC_DAY - kernel.MemMgr.VICKY.StartAddress, BCD(currentTime.Day));
-                kernel.MemMgr.VICKY.WriteByte(MemoryLocations.MemoryMap.RTC_MONTH - kernel.MemMgr.VICKY.StartAddress, BCD(currentTime.Month));
-                kernel.MemMgr.VICKY.WriteByte(MemoryLocations.MemoryMap.RTC_YEAR - kernel.MemMgr.VICKY.StartAddress, BCD(currentTime.Year % 100));
-                kernel.MemMgr.VICKY.WriteByte(MemoryLocations.MemoryMap.RTC_CENTURY - kernel.MemMgr.VICKY.StartAddress, BCD(currentTime.Year / 100));
-                kernel.MemMgr.VICKY.WriteByte(MemoryLocations.MemoryMap.RTC_DOW - kernel.MemMgr.VICKY.StartAddress, (byte)(currentTime.DayOfWeek + 1));
-            }
-            else
-            {
-                kernel.MemMgr.VICKY.WriteByte(MemoryLocations.MemoryMap.RTC_SEC_JR - 0xC000, BCD(currentTime.Second));
-                kernel.MemMgr.VICKY.WriteByte(MemoryLocations.MemoryMap.RTC_SEC_JR + 2 - 0xC000, BCD(currentTime.Minute));
-                kernel.MemMgr.VICKY.WriteByte(MemoryLocations.MemoryMap.RTC_SEC_JR + 4 - 0xC000, BCD(currentTime.Hour));
-                kernel.MemMgr.VICKY.WriteByte(MemoryLocations.MemoryMap.RTC_SEC_JR + 6 - 0xC000, BCD(currentTime.Day));
-                kernel.MemMgr.VICKY.WriteByte(MemoryLocations.MemoryMap.RTC_SEC_JR + 8 - 0xC000, BCD(currentTime.Month));
-                kernel.MemMgr.VICKY.WriteByte(MemoryLocations.MemoryMap.RTC_SEC_JR + 10 - 0xC000, BCD(currentTime.Year % 100));
-                kernel.MemMgr.VICKY.WriteByte(MemoryLocations.MemoryMap.RTC_SEC_JR + 12 - 0xC000, BCD(currentTime.Year / 100));
-                kernel.MemMgr.VICKY.WriteByte(MemoryLocations.MemoryMap.RTC_SEC_JR + 14 - 0xC000, (byte)(currentTime.DayOfWeek + 1));
-            }
-        }
-
-        private byte BCD(int val)
-        {
-            return (byte)(val / 10 * 0x10 + val % 10);
         }
 
         private void CPUToolStripMenuItem_Click(object sender, EventArgs e)
@@ -930,18 +898,6 @@ namespace FoenixIDE.UI
             gpu.StopTimer();
             kernel.CPU.DebugPause = true;
             DisableTimers();
-            if (kernel.MemMgr.TIMER0 != null)
-            {
-                kernel.MemMgr.TIMER0.KillTimer();
-            }
-            if (kernel.MemMgr.TIMER1 != null)
-            {
-                kernel.MemMgr.TIMER1.KillTimer();
-            }
-            if (kernel.MemMgr.TIMER2 != null)
-            {
-                kernel.MemMgr.TIMER2.KillTimer();
-            }
             gpu.StartOfFrame = null;
             gpu.StartOfLine = null;
             gpu.KillTimer();
@@ -974,16 +930,6 @@ namespace FoenixIDE.UI
         {
             OpenFileDialog dialog = new OpenFileDialog
             {
-                Filter = "Hex Files|*.hex|PGX Files|*.pgx|PGZ Files|*.pgz",
-                Title = "Select an Executable File",
-                CheckFileExists = true
-            };
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                LoadExecutableFile(dialog.FileName);
-            }
-        }
-
         private void openExecutableFileCPULogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog
@@ -1479,6 +1425,7 @@ namespace FoenixIDE.UI
             DisplayBoardVersion();
             // Reset the memory, keyboard, GABE and reload the program?
             debugWindow.Pause();
+            DisableTimers();
             kernel.lstFile.Lines.Clear();
             BasicWindow_Load(null, null);
         }
