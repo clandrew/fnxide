@@ -367,20 +367,6 @@ namespace FoenixIDE.UI
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.settingsToolStripMenuItem.Text = "&Settings";
             // 
-            // autorunEmulatorToolStripMenuItem
-            // 
-            this.autorunEmulatorToolStripMenuItem.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.autorunEmulatorToolStripMenuItem.Checked = true;
-            this.autorunEmulatorToolStripMenuItem.CheckOnClick = true;
-            this.autorunEmulatorToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.autorunEmulatorToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.autorunEmulatorToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
-            this.autorunEmulatorToolStripMenuItem.Name = "autorunEmulatorToolStripMenuItem";
-            this.autorunEmulatorToolStripMenuItem.Padding = new System.Windows.Forms.Padding(0, 2, 0, 1);
-            this.autorunEmulatorToolStripMenuItem.Size = new System.Drawing.Size(169, 23);
-            this.autorunEmulatorToolStripMenuItem.Text = "Autorun Emulator";
-            this.autorunEmulatorToolStripMenuItem.Click += new System.EventHandler(this.autorunEmulatorToolStripMenuItem_Click);
-            // 
             // transcriptModeDebuggerToolStripMenuItem
             // 
             this.transcriptModeDebuggerToolStripMenuItem.CheckOnClick = true;

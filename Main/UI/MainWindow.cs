@@ -930,6 +930,16 @@ namespace FoenixIDE.UI
         {
             OpenFileDialog dialog = new OpenFileDialog
             {
+                Filter = "Hex Files|*.hex|PGX Files|*.pgx|PGZ Files|*.pgz|Binary Files|*.bin",
+                Title = "Select an Executable File",
+                CheckFileExists = true
+            };
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                LoadExecutableFile(dialog.FileName);
+            }
+        }
+
         private void openExecutableFileCPULogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog

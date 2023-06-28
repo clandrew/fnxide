@@ -335,11 +335,11 @@ namespace FoenixIDE.UI
                 // Register 1
                 Tooltip.SetToolTip(KeyboardCheckBox, "Break on UART Interrupts");
                 Tooltip.SetToolTip(V2SprColCheck, "Break on Vicky Int2 Interrupts");
-                Tooltip.SetToolTip(V2BitColCheck, "Break on Vicky Int3 Interrupts");
+                //Tooltip.SetToolTip(V2BitColCheck, "Break on Vicky Int3 Interrupts");
                 Tooltip.SetToolTip(COM2Checkbox, "Break on Vicky Int4 Interrupts");
                 Tooltip.SetToolTip(COM1Checkbox, "Break on RTC Interrupts");
                 Tooltip.SetToolTip(MPU401Checkbox, "Break on VIA Interrupts");
-                Tooltip.SetToolTip(ParallelPortCheck, "Break on IEC Interrupts");
+                //Tooltip.SetToolTip(ParallelPortCheck, "Break on IEC Interrupts");
                 Tooltip.SetToolTip(SDCardCheckBox, "Break on SD Card Interrupts");
             }
             else
@@ -356,23 +356,23 @@ namespace FoenixIDE.UI
 
                 // Register 1
                 Tooltip.SetToolTip(KeyboardCheckBox, "Break on Keyboard Interrupts");
-                Tooltip.SetToolTip(V2SprColCheck, "Break on Sprite Collision Interrupts");
-                Tooltip.SetToolTip(V2BitColCheck, "Break on Bitmap Collision Interrupts");
+                //Tooltip.SetToolTip(V2SprColCheck, "Break on Sprite Collision Interrupts");
+                //Tooltip.SetToolTip(V2BitColCheck, "Break on Bitmap Collision Interrupts");
                 Tooltip.SetToolTip(COM2Checkbox, "Break on COM2 Interrupts");
                 Tooltip.SetToolTip(COM1Checkbox, "Break on COM1 Interrupts");
                 Tooltip.SetToolTip(MPU401Checkbox, "Break on MIDI Ctrlr Interrupts");
-                Tooltip.SetToolTip(ParallelPortCheck, "Break on Parallel Interrupts");
+                //Tooltip.SetToolTip(ParallelPortCheck, "Break on Parallel Interrupts");
                 Tooltip.SetToolTip(SDCardCheckBox, "Break on SD Card Interrupts");
 
                 // Register 2
-                Tooltip.SetToolTip(OPL3Checkbox, "Break on OPL3 Interrupts");
-                Tooltip.SetToolTip(GabeInt0Check, "Break on Gabe INT0 Interrupts");
-                Tooltip.SetToolTip(GabeInt1Check, "Break on Gabe INT1 Interrupts");
-                Tooltip.SetToolTip(VDMACheck, "Break on VDMA Interrupts");
-                Tooltip.SetToolTip(V2TileColCheck, "Break on Tile Collision Interrupts");
-                Tooltip.SetToolTip(GabeInt2Check, "Break on Gabe INT2 Interrupts");
-                Tooltip.SetToolTip(ExtExpCheck, "Break on External Expansion Interrupts");
-                Tooltip.SetToolTip(SDCardInsertCheck, "Break on SDCard Insertion Interrupts");
+                //Tooltip.SetToolTip(OPL3Checkbox, "Break on OPL3 Interrupts");
+                //Tooltip.SetToolTip(GabeInt0Check, "Break on Gabe INT0 Interrupts");
+                //Tooltip.SetToolTip(GabeInt1Check, "Break on Gabe INT1 Interrupts");
+                //Tooltip.SetToolTip(VDMACheck, "Break on VDMA Interrupts");
+                //Tooltip.SetToolTip(V2TileColCheck, "Break on Tile Collision Interrupts");
+                //Tooltip.SetToolTip(GabeInt2Check, "Break on Gabe INT2 Interrupts");
+                //Tooltip.SetToolTip(ExtExpCheck, "Break on External Expansion Interrupts");
+                //Tooltip.SetToolTip(SDCardInsertCheck, "Break on SDCard Insertion Interrupts");
             }
         }
         private void DebugPanel_MouseMove(object sender, MouseEventArgs e)
@@ -785,71 +785,72 @@ namespace FoenixIDE.UI
                    )
                 {
                     {
-                    if (kernel.CPU.CurrentOpcode.Value == 0)
-                    {
-                        if (lastLine.InvokeRequired)
+                        if (kernel.CPU.CurrentOpcode.Value == 0)
                         {
-                            lastLine.Invoke((MethodInvoker)delegate
+                            if (lastLine.InvokeRequired)
+                            {
+                                lastLine.Invoke((MethodInvoker)delegate
+                                {
+                                    lastLine.Text = "BRK OpCode read";
+                                });
+                            }
+                            else
                             {
                                 lastLine.Text = "BRK OpCode read";
-                            });
+                            }
                         }
-                        else
+                        if (UpdateTraceTimer.Enabled || kernel.CPU.CurrentOpcode.Value == 0)
                         {
-                            lastLine.Text = "BRK OpCode read";
+                            UpdateTraceTimer.Enabled = false;
+                            kernel.CPU.DebugPause = true;
+                            writeToTranscriptEnablement = WriteToTranscriptEnablement.Enabled;
+                            //queue.Clear();
                         }
-                    }
-                    if (UpdateTraceTimer.Enabled || kernel.CPU.CurrentOpcode.Value == 0)
-                    {
-                        UpdateTraceTimer.Enabled = false;
-                        kernel.CPU.DebugPause = true;
-                        writeToTranscriptEnablement = WriteToTranscriptEnablement.Enabled;
-                        //queue.Clear();
-                    }
-                    if (kernel.CPU.Pins.GetInterruptPinActive && !kernel.CPU.Flags.IrqDisable)
-                    {
-                        IRQPC = kernel.CPU.PC;
-                    }
-                    if (line == null)
-                    {
-                        line = GetExecutionInstruction(nextPC);
+                        if (kernel.CPU.Pins.GetInterruptPinActive && !kernel.CPU.Flags.IrqDisable)
+                        {
+                            IRQPC = kernel.CPU.PC;
+                        }
                         if (line == null)
                         {
-                            GenerateNextInstruction(nextPC);
+                            line = GetExecutionInstruction(nextPC);
+                            if (line == null)
+                            {
+                                GenerateNextInstruction(nextPC);
+                            }
                         }
+                        Invoke(new breakpointSetter(BreakpointReached), new object[] { nextPC });
                     }
-                    Invoke(new breakpointSetter(BreakpointReached), new object[] { nextPC });
-                }
-            }
-
-            // Print the next instruction on lastLine
-            if (!UpdateTraceTimer.Enabled && line == null)
-            {
-                int pc = kernel.CPU.PC;
-                line = GetExecutionInstruction(pc);
-                if (line == null)
-                {
-                    GenerateNextInstruction(pc);
-                }
-            }
-
-            bool evaluateDebugLine =
-                writeToTranscriptEnablement == WriteToTranscriptEnablement.Enabled ||
-                cpuLogCheckBox.Checked;
-
-            if (evaluateDebugLine)
-            {
-                DebugLine transcriptLine = GetDebugLineFromPC(kernel.CPU.PC);
-
-                // Implicitly, this update transcript if unpaused only, don't want to incur the overhead unconditionally.
-                if (writeToTranscriptEnablement == WriteToTranscriptEnablement.Enabled)
-                {
-                    PushLineToTranscript(transcriptLine);
                 }
 
-                if (cpuLogCheckBox.Checked)
+                // Print the next instruction on lastLine
+                if (!UpdateTraceTimer.Enabled && line == null)
                 {
-                    cpuLogger.Log(transcriptLine.ToString());
+                    int pc = kernel.CPU.PC;
+                    line = GetExecutionInstruction(pc);
+                    if (line == null)
+                    {
+                        GenerateNextInstruction(pc);
+                    }
+                }
+
+                bool evaluateDebugLine =
+                    writeToTranscriptEnablement == WriteToTranscriptEnablement.Enabled ||
+                    cpuLogCheckBox.Checked;
+
+                if (evaluateDebugLine)
+                {
+                    DebugLine transcriptLine = GetDebugLineFromPC(kernel.CPU.PC);
+
+                    // Implicitly, this update transcript if unpaused only, don't want to incur the overhead unconditionally.
+                    if (writeToTranscriptEnablement == WriteToTranscriptEnablement.Enabled)
+                    {
+                        PushLineToTranscript(transcriptLine);
+                    }
+
+                    if (cpuLogCheckBox.Checked)
+                    {
+                        cpuLogger.Log(transcriptLine.ToString());
+                    }
                 }
             }
         }
@@ -957,7 +958,7 @@ namespace FoenixIDE.UI
             }
         }
 
-        private void JumpButton_Click(object sender, EventArgs e)
+        public void JumpButton_Click(object sender, EventArgs e)
         {
             int pc = FoenixSystem.TextAddressToInt(locationInput.Text);
             kernel.CPU.PC = pc;
@@ -1049,23 +1050,23 @@ namespace FoenixIDE.UI
 
                 // Row 2
                 KeyboardCheckBox.Visible = visible;
-                V2SprColCheck.Visible = visible;
-                V2BitColCheck.Visible = visible;
+                //V2SprColCheck.Visible = visible;
+                //V2BitColCheck.Visible = visible;
                 COM2Checkbox.Visible = visible;
                 COM1Checkbox.Visible = visible;
                 MPU401Checkbox.Visible = visible;
-                ParallelPortCheck.Visible = visible;
+                //ParallelPortCheck.Visible = visible;
                 SDCardCheckBox.Visible = visible;
 
                 // Row 3
-                OPL3Checkbox.Visible = false;
-                GabeInt0Check.Visible = false;
-                GabeInt1Check.Visible = false;
-                VDMACheck.Visible = false;
-                V2TileColCheck.Visible = false;
-                GabeInt2Check.Visible = false;
-                ExtExpCheck.Visible = false;
-                SDCardInsertCheck.Visible = false;
+                //OPL3Checkbox.Visible = false;
+                //GabeInt0Check.Visible = false;
+                //GabeInt1Check.Visible = false;
+                //VDMACheck.Visible = false;
+                //V2TileColCheck.Visible = false;
+                //GabeInt2Check.Visible = false;
+                //ExtExpCheck.Visible = false;
+                //SDCardInsertCheck.Visible = false;
             }
             else
             {
@@ -1081,23 +1082,23 @@ namespace FoenixIDE.UI
 
                 // Row 2
                 KeyboardCheckBox.Visible = visible;
-                V2SprColCheck.Visible = visible;
-                V2BitColCheck.Visible = visible;
+                //V2SprColCheck.Visible = visible;
+                //V2BitColCheck.Visible = visible;
                 COM2Checkbox.Visible = visible;
                 COM1Checkbox.Visible = visible;
                 MPU401Checkbox.Visible = visible;
-                ParallelPortCheck.Visible = visible;
+                //ParallelPortCheck.Visible = visible;
                 SDCardCheckBox.Visible = visible;
 
                 // Row 3
-                OPL3Checkbox.Visible = visible;
-                GabeInt0Check.Visible = visible;
-                GabeInt1Check.Visible = visible;
-                VDMACheck.Visible = visible;
-                V2TileColCheck.Visible = visible;
-                GabeInt2Check.Visible = visible;
-                ExtExpCheck.Visible = visible;
-                SDCardInsertCheck.Visible = visible;
+                //OPL3Checkbox.Visible = visible;
+                //GabeInt0Check.Visible = visible;
+                //GabeInt1Check.Visible = visible;
+                // VDMACheck.Visible = visible;
+                //V2TileColCheck.Visible = visible;
+                //GabeInt2Check.Visible = visible;
+                //ExtExpCheck.Visible = visible;
+                //SDCardInsertCheck.Visible = visible;
             }
         }
 
@@ -1126,17 +1127,17 @@ namespace FoenixIDE.UI
 
             // Read Interrupt Register 1
             byte reg1 = kernel.MemMgr.INTERRUPT.ReadByte(1);
-            ColorCheckBox[] row2 = { KeyboardCheckBox, V2SprColCheck, V2BitColCheck, COM2Checkbox, COM1Checkbox, MPU401Checkbox, ParallelPortCheck, SDCardCheckBox };
+            //ColorCheckBox[] row2 = { KeyboardCheckBox, V2SprColCheck, V2BitColCheck, COM2Checkbox, COM1Checkbox, MPU401Checkbox, ParallelPortCheck, SDCardCheckBox };
             for (int i = 0; i < 8; i++)
             {
-                if (row2[i].Checked && (reg1 & 1 << i) != 0)
+                //if (row2[i].Checked && (reg1 & 1 << i) != 0)
                 {
-                    row2[i].IsActive = true;
+                    //row2[i].IsActive = true;
                     result = true;
                 }
-                else
+                //else
                 {
-                    row2[i].IsActive = false;
+                    //row2[i].IsActive = false;
                 }
             }
 
@@ -1145,17 +1146,17 @@ namespace FoenixIDE.UI
             {
                 //Read Interrupt Register 2 - we don't handle these yet
                 byte reg2 = kernel.MemMgr.INTERRUPT.ReadByte(2);
-                ColorCheckBox[] row3 = { OPL3Checkbox, GabeInt0Check, GabeInt1Check, VDMACheck, V2TileColCheck, GabeInt2Check, ExtExpCheck, SDCardInsertCheck };
+                //ColorCheckBox[] row3 = { OPL3Checkbox, GabeInt0Check, GabeInt1Check, VDMACheck, V2TileColCheck, GabeInt2Check, ExtExpCheck, SDCardInsertCheck };
                 for (int i = 0; i < 8; i++)
                 {
-                    if (row3[i].Checked && (reg1 & 1 << i) != 0)
+                    //if (row3[i].Checked && (reg1 & 1 << i) != 0)
                     {
-                        row3[i].IsActive = true;
+                        //row3[i].IsActive = true;
                         result = true;
                     }
-                    else
+                    //else
                     {
-                        row3[i].IsActive = false;
+                        //row3[i].IsActive = false;
                     }
                 }
 
