@@ -275,7 +275,7 @@ namespace FoenixIDE.UI
             }
             kernel.MemMgr.SDCARD.sdCardIRQMethod += SDCardInterrupt;
             kernel.MemMgr.PS2KEYBOARD.TriggerMouseInterrupt += TriggerMouseInterrupt;
-            kernel.MemMgr.PS2KEYBOARD.TriggerKeyboardInterrupt += TriggerKeyboardInterrupt;
+            kernel.MemMgr.PS2KEYBOARD.TriggerKeyboardInterrupt += TriggerPS2KeyboardInterrupt;
 
             kernel.ResCheckerRef = ResChecker;
 
@@ -333,6 +333,7 @@ namespace FoenixIDE.UI
                     Top = Screen.PrimaryScreen.WorkingArea.Top,
                 };
                 debugWindow.Left = Screen.PrimaryScreen.WorkingArea.Width - debugWindow.Width;
+                debugWindow.SetDebugWindowMode(Simulator.Properties.Settings.Default.TranscriptModeDebugger ? CPUWindow.DebugWindowMode.Transcipt : CPUWindow.DebugWindowMode.Default);
                 debugWindow.SetBoardVersion(ver);
                 debugWindow.SetKernel(kernel);
                 debugWindow.Show();
@@ -623,11 +624,15 @@ namespace FoenixIDE.UI
                     kernel.MemMgr.PS2KEYBOARD.WriteByte(0, (byte)sc);
                     kernel.MemMgr.PS2KEYBOARD.WriteByte(4, 0);
 
-                    TriggerKeyboardInterrupt();
+                    TriggerPS2KeyboardInterrupt();
                 }
             }
             else
             {
+                // Notify the matrix keyboard
+                kernel.MemMgr.MATRIXKEYBOARD.WriteScanCode(sc);
+
+                // Notify the PS2 keyboard
                 // Check if the Keyboard interrupt is allowed
                 byte mask = kernel.MemMgr.VICKY.ReadByte(MemoryMap.INT_MASK_REG0_JR - 0xC000);
                 if ((~mask & (byte)Register0_JR.JR0_INT02_KBD) != 0)
@@ -635,11 +640,11 @@ namespace FoenixIDE.UI
                     kernel.MemMgr.PS2KEYBOARD.WriteByte(0, (byte)sc);
                     kernel.MemMgr.PS2KEYBOARD.WriteByte(4, 0);
 
-                    TriggerKeyboardInterrupt();
+                    TriggerPS2KeyboardInterrupt();
                 }
             }
         }
-        private void TriggerKeyboardInterrupt()
+        private void TriggerPS2KeyboardInterrupt()
         {
             if (!BoardVersionHelpers.IsJr(version))
             {

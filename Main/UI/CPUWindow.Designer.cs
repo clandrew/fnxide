@@ -48,6 +48,7 @@ namespace FoenixIDE.UI
             this.UpdateTraceTimer = new System.Windows.Forms.Timer(this.components);
             this.SecondPanel = new System.Windows.Forms.Panel();
             this.ClearTraceButton = new System.Windows.Forms.Button();
+            this.cpuLogCheckBox = new System.Windows.Forms.CheckBox();
             this.Tooltip = new System.Windows.Forms.ToolTip(this.components);
             this.AddBPOverlayButton = new System.Windows.Forms.Button();
             this.DeleteBPOverlayButton = new System.Windows.Forms.Button();
@@ -86,7 +87,6 @@ namespace FoenixIDE.UI
             this.KeyboardCheckBox = new FoenixIDE.Simulator.Controls.ColorCheckBox();
             this.SOFCheckbox = new FoenixIDE.Simulator.Controls.ColorCheckBox();
             this.registerDisplay1 = new FoenixIDE.RegisterDisplay();
-            this.cpuLogCheckBox = new System.Windows.Forms.CheckBox();
             this.HeaderPanel.SuspendLayout();
             this.SecondPanel.SuspendLayout();
             this.irqPanel.SuspendLayout();
@@ -255,6 +255,7 @@ namespace FoenixIDE.UI
             this.SecondPanel.Controls.Add(this.locationLabel);
             this.SecondPanel.Controls.Add(this.JumpButton);
             this.SecondPanel.Controls.Add(this.ClearTraceButton);
+            this.SecondPanel.Controls.Add(this.cpuLogCheckBox);
             this.SecondPanel.Location = new System.Drawing.Point(0, 25);
             this.SecondPanel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.SecondPanel.Name = "SecondPanel";
@@ -272,6 +273,18 @@ namespace FoenixIDE.UI
             this.ClearTraceButton.Text = "Clear Trace";
             this.ClearTraceButton.UseVisualStyleBackColor = true;
             this.ClearTraceButton.Click += new System.EventHandler(this.ClearTraceButton_Click);
+            // 
+            // cpuLogCheckBox
+            // 
+            this.cpuLogCheckBox.AutoSize = true;
+            this.cpuLogCheckBox.BackColor = System.Drawing.SystemColors.Control;
+            this.cpuLogCheckBox.Location = new System.Drawing.Point(280, 3);
+            this.cpuLogCheckBox.Name = "cpuLogCheckBox";
+            this.cpuLogCheckBox.Size = new System.Drawing.Size(69, 17);
+            this.cpuLogCheckBox.TabIndex = 35;
+            this.cpuLogCheckBox.Text = "CPU Log";
+            this.cpuLogCheckBox.UseVisualStyleBackColor = false;
+            this.cpuLogCheckBox.CheckedChanged += new System.EventHandler(this.cpuLogCheckBox_CheckedChanged);
             // 
             // AddBPOverlayButton
             // 
@@ -840,18 +853,6 @@ namespace FoenixIDE.UI
             this.registerDisplay1.Size = new System.Drawing.Size(366, 49);
             this.registerDisplay1.TabIndex = 0;
             this.registerDisplay1.MouseEnter += new System.EventHandler(this.DebugPanel_Leave);
-            // 
-            // cpuLogCheckBox
-            // 
-            this.cpuLogCheckBox.AutoSize = true;
-            this.cpuLogCheckBox.BackColor = System.Drawing.SystemColors.Control;
-            this.cpuLogCheckBox.Location = new System.Drawing.Point(293, 28);
-            this.cpuLogCheckBox.Name = "cpuLogCheckBox";
-            this.cpuLogCheckBox.Size = new System.Drawing.Size(69, 17);
-            this.cpuLogCheckBox.TabIndex = 35;
-            this.cpuLogCheckBox.Text = "CPU Log";
-            this.cpuLogCheckBox.UseVisualStyleBackColor = false;
-            this.cpuLogCheckBox.CheckedChanged += new System.EventHandler(this.cpuLogCheckBox_CheckedChanged);
             // 
             // CPUWindow
             // 
