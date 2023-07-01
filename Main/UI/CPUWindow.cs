@@ -291,8 +291,11 @@ namespace FoenixIDE.UI
             int index = 0;
             foreach (DebugLine line in transcript)
             {
-                e.Graphics.DrawString(line.ToString(), HeaderTextbox.Font, Brushes.Black, 102, index * ROW_HEIGHT);
-                index++;
+                if (line != null) // Line can be null for invalid opcodes
+                {
+                    e.Graphics.DrawString(line.ToString(), HeaderTextbox.Font, Brushes.Black, 102, index * ROW_HEIGHT);
+                    index++;
+                }
             }
         }
 
