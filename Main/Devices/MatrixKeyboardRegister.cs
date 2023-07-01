@@ -11,15 +11,31 @@ namespace FoenixIDE.Simulator.Devices
                 System.Diagnostics.Debug.Assert(Length == 4);
             }
 
+            bool CanRead(int Address)
+            {
+                if (Address == 0) // Port B
+                {
+                    bool canReadPortB = VIA0_DDRB == 0;
+                    return canReadPortB;
+                }
+                else if (Address == 1) // Port A
+                {
+                    bool canReadPortA = VIA0_DDRA == 0;
+                    return canReadPortA;
+                }
+                return true;
+            }
+
 
             public override byte ReadByte(int Address)
             {
-                byte read = base.ReadByte(Address);
+                if (!CanRead(Address))
+                    return 0;
+
+                byte read = data[Address];
 
                 if (Address == 0)
-                {
                     VIA0_PRB = 0x7f; // For some reason I noticed programs depend on this side effect.
-                }
 
                 return read;
             }
@@ -44,7 +60,7 @@ namespace FoenixIDE.Simulator.Devices
                 if (!CanWrite(Address))
                     return;
 
-                base.WriteByte(Address, Value);
+                data[Address] = Value;
             }
             public byte VIA0_PRB { get { return data[0]; } set { data[0] = value; } }
             byte VIA0_DDRA { get { return data[3]; } set { data[3] = value; } }
