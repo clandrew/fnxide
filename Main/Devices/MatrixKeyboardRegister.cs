@@ -30,6 +30,43 @@ namespace FoenixIDE.Simulator.Devices
                 matrix = m;
             }
 
+            bool CanWrite(int Address)
+            {
+                if (Address == 0)
+                {
+                    bool canWritePortB = VIA1_DDRB == 0xFF;
+                    return canWritePortB;
+                }
+                if (Address == 1)
+                {
+                    bool canWritePortA = VIA1_DDRA == 0xFF;
+                    return canWritePortA;
+                }
+                return true;
+            }
+
+            public override void WriteByte(int Address, byte Value)
+            {
+                if (!CanWrite(Address))
+                    return;
+
+                data[Address] = Value;
+
+                HandleWriteSideEffects(Address, Value);
+            }
+
+            void HandleWriteSideEffects(int Address, byte Value)
+            {
+                if (Address == 1) // We wrote to port A.
+                {
+                    WriteByteSideEffect_StandardDirection(Value);
+                }
+                else if (Address == 0) // We wrote to port B.
+                {
+                    WriteByteSideEffect_ReverseDirection(Value);
+                }
+            }
+
             public void WriteByteSideEffect_StandardDirection(byte Value)
             {
                 if (Value == (1 << 0 ^ 0xFF)) // PA0
@@ -111,7 +148,7 @@ namespace FoenixIDE.Simulator.Devices
                     VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_l] ? (byte)0 : (byte)(1 << 2);
                     VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_capslock] ? (byte)0 : (byte)(1 << 3);
                     VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_period] ? (byte)0 : (byte)(1 << 4);
-                    VIA1_PRB |= (byte)(1 << 5); // Semicolon is not differentiated
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_semicolon] ? (byte)0 : (byte)(1 << 5);
                     VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_bracketLeft] ? (byte)0 : (byte)(1 << 6);
                     VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_comma] ? (byte)0 : (byte)(1 << 7);
                 }
@@ -120,7 +157,7 @@ namespace FoenixIDE.Simulator.Devices
                     VIA1_PRB = 0;
                     VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_equals] ? (byte)0 : (byte)(1 << 0);
                     VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_bracketRight] ? (byte)0 : (byte)(1 << 1);
-                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_semicolon] ? (byte)0 : (byte)(1 << 2);
+                    VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_apostrophe] ? (byte)0 : (byte)(1 << 2);
                     VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_backslash] ? (byte)0 : (byte)(1 << 3); // A backslash\ is mapped to the HOME key
                     VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_shiftRight] ? (byte)0 : (byte)(1 << 4);
                     VIA1_PRB |= matrix.scanCodeBuffer[(int)ScanCode.sc_altLeft] ? (byte)0 : (byte)(1 << 5);
@@ -192,7 +229,7 @@ namespace FoenixIDE.Simulator.Devices
                     VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_g] ? (byte)0 : (byte)(1 << 3);
                     VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_j] ? (byte)0 : (byte)(1 << 4);
                     VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_l] ? (byte)0 : (byte)(1 << 5);
-                    VIA1_PRA |= (byte)(1 << 6); // Semicolon is not differentiated
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_semicolon] ? (byte)0 : (byte)(1 << 6);
                     VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_controlLeft] ? (byte)0 : (byte)(1 << 7);
                 }
                 else if (Value == (1 << 3 ^ 0xFF)) // PB3
@@ -227,7 +264,7 @@ namespace FoenixIDE.Simulator.Devices
                     VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_f] ? (byte)0 : (byte)(1 << 2);
                     VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_h] ? (byte)0 : (byte)(1 << 3);
                     VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_k] ? (byte)0 : (byte)(1 << 4);
-                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_semicolon] ? (byte)0 : (byte)(1 << 5);
+                    VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_apostrophe] ? (byte)0 : (byte)(1 << 5);
                     VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_altLeft] ? (byte)0 : (byte)(1 << 6);
                     VIA1_PRA |= matrix.scanCodeBuffer[(int)ScanCode.sc_grave] ? (byte)0 : (byte)(1 << 7); // A backtick` is mapped to the Foenix key
                 }
@@ -261,33 +298,20 @@ namespace FoenixIDE.Simulator.Devices
                 }
             }
 
-            public override void WriteByte(int Address, byte Value)
-            {
-                data[Address] = Value;                
-
-                // Handle side effects below.
-                // 
-                if (VIA1_DDRA == 0xFF && VIA1_DDRB == 0x00) // Write A, Read B- the standard direction
-                {
-                    if (Address == 1) // Write to port A.
-                    {
-                        WriteByteSideEffect_StandardDirection(Value);
-                    }
-                }                
-                else if (VIA1_DDRA == 0 && VIA1_DDRB == 0xFF) // Write B, Read A- the reverse direction
-                {
-                    if (Address == 0) // Write to port B.
-                    {
-                        WriteByteSideEffect_ReverseDirection(Value);
-                    }
-                }
-            }
             public override byte ReadByte(int Address)
             {
                 if (Address == 0) // Port B
                 {
                     bool canReadPortB = VIA1_DDRB == 0;
                     if (!canReadPortB)
+                    {
+                        return 0;
+                    }
+                }
+                else if (Address == 1) // Port A
+                {
+                    bool canReadPortA = VIA1_DDRA == 0;
+                    if (!canReadPortA)
                     {
                         return 0;
                     }
@@ -314,7 +338,6 @@ namespace FoenixIDE.Simulator.Devices
 
         public VIA0Range VIA0; // Used for the right and down arrow keys
         public VIA1Range VIA1; // Used for all the other keys
-
 
         public void WriteScanCode(ScanCode sc)
         {
