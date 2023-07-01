@@ -884,7 +884,7 @@ namespace FoenixIDE.UI
                 byte[] command = new byte[ocLength];
                 for (int i = 0; i < ocLength; i++)
                 {
-                    command[i] = kernel.MemMgr.RAM.ReadByte(pc + i);
+                    command[i] = kernel.MemMgr.ReadByte(pc + i);
                 }
                 string opcodes = oc.ToString(kernel.CPU.ReadSignature(ocLength, pc));
 
