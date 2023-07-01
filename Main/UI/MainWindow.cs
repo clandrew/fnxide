@@ -48,6 +48,7 @@ namespace FoenixIDE.UI
         public static MainWindow Instance = null;
         private delegate void WriteCPSFPSFunction(string CPS, string FPS);
         private bool fullScreen = false;
+        private bool cpuLogCommandLineArgSpecified = false;
 
         public MainWindow(Dictionary<string, string> context)
         {
@@ -101,6 +102,10 @@ namespace FoenixIDE.UI
                         version = BoardVersion.RevJr_65816;
                     }
                     boardVersionCommandLineSpecified = true;
+                }
+                if (context.ContainsKey("cpulog"))
+                {
+                    cpuLogCommandLineArgSpecified = true;
                 }
             }
             // If the user didn't specify context switches, read the ini setting
@@ -269,8 +274,8 @@ namespace FoenixIDE.UI
                 kernel.MemMgr.UART2.TransmitByte += SerialTransmitByte;
             }
             kernel.MemMgr.SDCARD.sdCardIRQMethod += SDCardInterrupt;
-            kernel.MemMgr.KEYBOARD.TriggerMouseInterrupt += TriggerMouseInterrupt;
-            kernel.MemMgr.KEYBOARD.TriggerKeyboardInterrupt += TriggerKeyboardInterrupt;
+            kernel.MemMgr.PS2KEYBOARD.TriggerMouseInterrupt += TriggerMouseInterrupt;
+            kernel.MemMgr.PS2KEYBOARD.TriggerKeyboardInterrupt += TriggerKeyboardInterrupt;
 
             kernel.ResCheckerRef = ResChecker;
 
@@ -290,6 +295,7 @@ namespace FoenixIDE.UI
                 debugWindow.RunButton_Click(null, null);
             }
             autorunEmulatorToolStripMenuItem.Checked = autoRun;
+            transcriptModeDebuggerToolStripMenuItem.Checked = Simulator.Properties.Settings.Default.TranscriptModeDebugger;
         }
 
         private void CenterForm(Form form)
@@ -330,6 +336,11 @@ namespace FoenixIDE.UI
                 debugWindow.SetBoardVersion(ver);
                 debugWindow.SetKernel(kernel);
                 debugWindow.Show();
+
+                if (cpuLogCommandLineArgSpecified)
+                {
+                    debugWindow.EnableCpuLog();
+                }
             }
             else
             {
@@ -591,7 +602,7 @@ namespace FoenixIDE.UI
                 e.Handled = true;
                 if (kernel.MemMgr != null && !kernel.CPU.DebugPause)
                 {
-                    kernel.MemMgr.KEYBOARD.WriteScanCodeSequence(new byte[] { 0xe1, 0x1d, 0x45, 0xe1, 0x9d, 0xc5 }, 6);
+                    kernel.MemMgr.PS2KEYBOARD.WriteScanCodeSequence(new byte[] { 0xe1, 0x1d, 0x45, 0xe1, 0x9d, 0xc5 }, 6);
                 }
                 lastKeyPressed.Text = "Break";
             }
@@ -609,8 +620,8 @@ namespace FoenixIDE.UI
                 byte mask = kernel.MemMgr.ReadByte(MemoryMap.INT_MASK_REG1);
                 if ((~mask & (byte)Register1.FNX1_INT00_KBD) != 0)
                 {
-                    kernel.MemMgr.KEYBOARD.WriteByte(0, (byte)sc);
-                    kernel.MemMgr.KEYBOARD.WriteByte(4, 0);
+                    kernel.MemMgr.PS2KEYBOARD.WriteByte(0, (byte)sc);
+                    kernel.MemMgr.PS2KEYBOARD.WriteByte(4, 0);
 
                     TriggerKeyboardInterrupt();
                 }
@@ -621,8 +632,8 @@ namespace FoenixIDE.UI
                 byte mask = kernel.MemMgr.VICKY.ReadByte(MemoryMap.INT_MASK_REG0_JR - 0xC000);
                 if ((~mask & (byte)Register0_JR.JR0_INT02_KBD) != 0)
                 {
-                    kernel.MemMgr.KEYBOARD.WriteByte(0, (byte)sc);
-                    kernel.MemMgr.KEYBOARD.WriteByte(4, 0);
+                    kernel.MemMgr.PS2KEYBOARD.WriteByte(0, (byte)sc);
+                    kernel.MemMgr.PS2KEYBOARD.WriteByte(4, 0);
 
                     TriggerKeyboardInterrupt();
                 }
@@ -914,6 +925,20 @@ namespace FoenixIDE.UI
                 LoadExecutableFile(dialog.FileName);
             }
         }
+        private void openExecutableFileCPULogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                Filter = "Hex Files|*.hex|PGX Files|*.pgx|PGZ Files|*.pgz",
+                Title = "Select an Executable File",
+                CheckFileExists = true
+            };
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                LoadExecutableFile(dialog.FileName);
+                debugWindow.EnableCpuLog();
+            }
+        }
 
         /*
          * Read a Foenix XML file
@@ -1192,7 +1217,7 @@ namespace FoenixIDE.UI
             // The PS/2 packet is byte0, xm, ym
             if ((~mask & (byte)Register0.FNX0_INT07_MOUSE) == (byte)Register0.FNX0_INT07_MOUSE)
             {
-                kernel.MemMgr.KEYBOARD.MousePackets((byte)(8 + (middle ? 4 : 0) + (right ? 2 : 0) + (left ? 1 : 0)), (byte)(X & 0xFF), (byte)(Y & 0xFF));
+                kernel.MemMgr.PS2KEYBOARD.MousePackets((byte)(8 + (middle ? 4 : 0) + (right ? 2 : 0) + (left ? 1 : 0)), (byte)(X & 0xFF), (byte)(Y & 0xFF));
             }
         }
 
@@ -1230,18 +1255,43 @@ namespace FoenixIDE.UI
                 sdCardWindow.SetClusterSize(kernel.MemMgr.SDCARD.GetClusterSize());
                 sdCardWindow.SetFSType(kernel.MemMgr.SDCARD.GetFSType().ToString());
                 sdCardWindow.ShowDialog(this);
-                ResetSDCard();
+                ResetSDCardFromDialogWindow();
             }
         }
 
         private void ResetSDCard()
+        {
+            // If user's settings file specified an SD card, load it now.
+            if (Simulator.Properties.Settings.Default.SDCardFolder != null)
+            {
+                ResetSDCardFromSettings();
+            }
+            else
+            {
+                ResetSDCardFromDialogWindow();
+            }
+        }
+
+        private void ResetSDCardFromDialogWindow()
         {
             string path = sdCardWindow.GetPath();
             int capacity = sdCardWindow.GetCapacity();
             int clusterSize = sdCardWindow.GetClusterSize();
             string fsType = sdCardWindow.GetFSType();
             bool ISOMode = sdCardWindow.GetISOMode();
+        }
+        private void ResetSDCardFromSettings()
+        {
+            int sdCardCapacity = Simulator.Properties.Settings.Default.SDCardCapacity;
+            int sdCardClusterSize = Simulator.Properties.Settings.Default.SDCardClusterSize;
+            string sdCardFileSystemType = Simulator.Properties.Settings.Default.SDCardFileSystemType;
+            bool sdCardISOMode = Simulator.Properties.Settings.Default.SDCardISOMode;
 
+            ResetSDCardImpl(Simulator.Properties.Settings.Default.SDCardFolder, sdCardCapacity, sdCardClusterSize, sdCardFileSystemType, sdCardISOMode);
+        }
+
+        private void ResetSDCardImpl(string path, int capacity, int clusterSize, string fsType, bool ISOMode)
+        {
             kernel.MemMgr.SDCARD.SetSDCardPath(path);
             byte sdCardStat = 0;
             if (path == null || path.Length == 0)
@@ -1825,6 +1875,14 @@ namespace FoenixIDE.UI
         {
             MIDI_VGM_From midiForm = new MIDI_VGM_From();
             midiForm.Show();
+        }
+
+        private void transcriptModeDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Simulator.Properties.Settings.Default.TranscriptModeDebugger = transcriptModeDebuggerToolStripMenuItem.Checked;
+            Simulator.Properties.Settings.Default.Save();
+            debugWindow.SetDebugWindowMode(transcriptModeDebuggerToolStripMenuItem.Checked ? CPUWindow.DebugWindowMode.Transcipt : CPUWindow.DebugWindowMode.Default);
+            debugWindow.Refresh();
         }
     }
 }
