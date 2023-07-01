@@ -37,32 +37,44 @@ namespace FoenixIDE.Simulator.FileFormat
                         string[] tokens = line.Split(new char[] { '\t' });
                         if (tokens.Length > 2)
                         {
-                            pc = Convert.ToInt32(tokens[0].Replace(".",""), 16);
-                            if (CommandOffset > 1 && tokens[1] != "")
+                            bool validFormat;
+                            try
                             {
-                                pc = Convert.ToInt32(tokens[1], 16);
+                                pc = Convert.ToInt32(tokens[0].Replace(".", ""), 16);
+                                validFormat = true;
+                            }
+                            catch (FormatException)
+                            {
+                                validFormat = false;
                             }
 
+                            if (validFormat)
+                            {
+                                if (CommandOffset > 1 && tokens[1] != "")
+                                {
+                                    pc = Convert.ToInt32(tokens[1], 16);
+                                }
 
-                            // check if a match already exists
-                            DbgLines.TryGetValue(pc, out DebugLine match);
-                            if (match == null)
-                            {
-                                match = new DebugLine(pc);
-                                DbgLines.Add(pc, match);
+
+                                // check if a match already exists
+                                DbgLines.TryGetValue(pc, out DebugLine match);
+                                if (match == null)
+                                {
+                                    match = new DebugLine(pc);
+                                    DbgLines.Add(pc, match);
+                                }
+                                string[] strOpcodes = tokens[CommandOffset].Split(new char[] { ' ' });
+                                if (strOpcodes[0].Length == 0)
+                                {
+                                    match.SetLabel(tokens[tokens.Length - 1].Trim());
+                                }
+                                else
+                                {
+                                    byte[] opcodes = Array.ConvertAll(strOpcodes, value => Convert.ToByte(value, 16));
+                                    match.SetOpcodes(opcodes);
+                                    match.SetMnemonic(tokens[tokens.Length - 1]);
+                                }
                             }
-                            string[] strOpcodes = tokens[CommandOffset].Split(new char[] { ' ' });
-                            if (strOpcodes[0].Length == 0)
-                            {
-                                match.SetLabel(tokens[tokens.Length - 1].Trim());
-                            }
-                            else
-                            {
-                                byte[] opcodes = Array.ConvertAll(strOpcodes, value => Convert.ToByte(value, 16));
-                                match.SetOpcodes(opcodes);
-                                match.SetMnemonic(tokens[tokens.Length - 1]);
-                            }
-                            
                         }
                     } 
                     else if (line.StartsWith(";Offset"))
