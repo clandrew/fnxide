@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FoenixIDE.Basic;
+﻿using FoenixIDE.Basic;
 
 namespace FoenixIDE.Simulator.Devices
 {
@@ -15,11 +10,45 @@ namespace FoenixIDE.Simulator.Devices
             {
                 System.Diagnostics.Debug.Assert(Length == 4);
             }
-            public byte VIA0_PRA { get { return data[1]; } set { data[1] = value; } }
-            public byte VIA0_PRB { get { return data[0]; } set { data[0] = value; } }
 
-            public byte VIA0_DDRA { get { return data[3]; } set { data[3] = value; } }
-            public byte VIA0_DDRB { get { return data[2]; } set { data[2] = value; } }
+
+            public override byte ReadByte(int Address)
+            {
+                byte read = base.ReadByte(Address);
+
+                if (Address == 0)
+                {
+                    VIA0_PRB = 0x7f; // For some reason I noticed programs depend on this side effect.
+                }
+
+                return read;
+            }
+
+            bool CanWrite(int Address)
+            {
+                if (Address == 0)
+                {
+                    bool canWritePortB = VIA0_DDRB == 0x7F;
+                    return canWritePortB;
+                }
+                if (Address == 1)
+                {
+                    bool canWritePortA = VIA0_DDRA == 0x7F;
+                    return canWritePortA;
+                }
+                return true;
+            }
+
+            public override void WriteByte(int Address, byte Value)
+            {
+                if (!CanWrite(Address))
+                    return;
+
+                base.WriteByte(Address, Value);
+            }
+            public byte VIA0_PRB { get { return data[0]; } set { data[0] = value; } }
+            byte VIA0_DDRA { get { return data[3]; } set { data[3] = value; } }
+            byte VIA0_DDRB { get { return data[2]; } set { data[2] = value; } }
         }
 
         public class VIA1Range : MemoryLocations.MemoryRAM
@@ -298,24 +327,25 @@ namespace FoenixIDE.Simulator.Devices
                 }
             }
 
-            public override byte ReadByte(int Address)
+            bool CanRead(int Address)
             {
                 if (Address == 0) // Port B
                 {
                     bool canReadPortB = VIA1_DDRB == 0;
-                    if (!canReadPortB)
-                    {
-                        return 0;
-                    }
+                    return canReadPortB;
                 }
                 else if (Address == 1) // Port A
                 {
                     bool canReadPortA = VIA1_DDRA == 0;
-                    if (!canReadPortA)
-                    {
-                        return 0;
-                    }
+                    return canReadPortA;
                 }
+                return true;
+            }
+
+            public override byte ReadByte(int Address)
+            {
+                if (!CanRead(Address))
+                    return 0;
 
                 return data[Address];
             }
@@ -354,6 +384,5 @@ namespace FoenixIDE.Simulator.Devices
             }
         }
         bool[] scanCodeBuffer;
-
     }
 }
